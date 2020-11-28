@@ -2,19 +2,19 @@ package usecase
 
 import (
 	"context"
-	"pixstall_server/app/domain"
+	"pixstall-user/domain/auth"
 )
 
-type authUsecase struct {
-	authRepo domain.AuthRepository
+type authUseCase struct {
+	authRepo auth.Repo
 }
 
-func NewAuthUsecase(repo domain.AuthRepository) domain.AuthUsecase {
-	return &authUsecase{
+func NewAuthUsecase(repo auth.Repo) auth.UseCase {
+	return &auth.UseCase{
 		authRepo: repo,
 	}
 }
 
-func (a authUsecase) GetAuthURL(ctx context.Context, authType string) (string, error) {
+func (a authUseCase) GetAuthURL(ctx context.Context, authType string) (string, error) {
 	return a.authRepo.GetAuthURL(ctx, authType)
 }

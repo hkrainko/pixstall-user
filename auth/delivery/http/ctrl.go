@@ -2,17 +2,17 @@ package http
 
 import (
 	"github.com/gin-gonic/gin"
-	"pixstall_server/app/auth/delivery/get-auth-url"
-	"pixstall_server/app/domain"
+	get_auth_url "pixstall-user/auth/delivery/get-auth-url"
+	"pixstall-user/domain/auth"
 )
 
 type AuthController struct{
-	authUsecase domain.AuthUsecase
+	authUseCase auth.UseCase
 }
 
-func NewAuthController(usecase domain.AuthUsecase) AuthController {
+func NewAuthController(usecase auth.UseCase) AuthController {
 	return AuthController{
-		authUsecase: usecase,
+		authUseCase: usecase,
 	}
 
 }
@@ -22,7 +22,7 @@ func (a AuthController) GetAuthUrl(c *gin.Context) {
 	if authType == "" {
 		return
 	}
-	url, err := a.authUsecase.GetAuthURL(c, authType)
+	url, err := a.authUseCase.GetAuthURL(c, authType)
 	if err != nil {
 		return
 	}
