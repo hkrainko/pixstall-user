@@ -8,9 +8,10 @@ import (
 	auth_deliv "pixstall-user/app/auth/delivery/http"
 	auth_repo "pixstall-user/app/auth/repository/grpc"
 	auth_ucase "pixstall-user/app/auth/usecase"
+	user_repo "pixstall-user/app/user/repository/mongo"
 )
 
 func InitAuthController(grpcConn *grpc.ClientConn) auth_deliv.AuthController {
-	wire.Build(auth_deliv.NewAuthController, auth_ucase.NewAuthUseCase, auth_repo.NewGRPCAuthRepository)
+	wire.Build(auth_deliv.NewAuthController, auth_ucase.NewAuthUseCase, auth_repo.NewGRPCAuthRepository, user_repo.NewMongoUserRepo)
 	return auth_deliv.AuthController{}
 }

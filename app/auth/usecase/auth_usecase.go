@@ -24,7 +24,7 @@ func (a authUseCase) GetAuthURL(ctx context.Context, authType string) (string, e
 	return a.authRepo.GetAuthURL(ctx, authType)
 }
 
-func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authModel.AuthCallback) (*authModel.AuthUserInfo, error) {
+func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authModel.AuthCallback) (*model.User, error) {
 	authUserInfo, err := a.authRepo.GetAuthorizedUserInfo(ctx, authCallBack)
 	if err != nil {
 		return nil, err
@@ -40,10 +40,7 @@ func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authMo
 				if error != nil {
 					return nil, error
 				}
-
-				return
-
-				break
+				return newUser, nil
 			default:
 				return nil, err
 			}
@@ -52,14 +49,13 @@ func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authMo
 		}
 	}
 
-
 	//Existing User
 	err = a.userRepo.SaveUser(ctx, user)
 	if err != nil {
 		return nil, err
 	}
 	
-	return userInfo, nil
+	return user, nil
 }
 
 func (a authUseCase) createNewUser(ctx context.Context, authUserInfo *authModel.AuthUserInfo) (*model.User, error) {
@@ -75,7 +71,7 @@ func (a authUseCase) createNewUser(ctx context.Context, authUserInfo *authModel.
 		PhotoURL: authUserInfo.PhotoURL,
 	}
 
-	err := a.userRepo.SaveUser(ctx, newUser)
+	err := a.userRepo.SaveUser(ctx, &newUser)
 	if err != nil {
 		return nil, err
 	}

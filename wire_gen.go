@@ -10,13 +10,15 @@ import (
 	"pixstall-user/app/auth/delivery/http"
 	grpc2 "pixstall-user/app/auth/repository/grpc"
 	"pixstall-user/app/auth/usecase"
+	"pixstall-user/app/user/repository/mongo"
 )
 
 // Injectors from wire.go:
 
 func InitAuthController(grpcConn *grpc.ClientConn) http.AuthController {
 	repo := grpc2.NewGRPCAuthRepository(grpcConn)
-	useCase := usecase.NewAuthUseCase(repo)
+	userRepo := mongo.NewMongoUserRepo()
+	useCase := usecase.NewAuthUseCase(repo, userRepo)
 	authController := http.NewAuthController(useCase)
 	return authController
 }
