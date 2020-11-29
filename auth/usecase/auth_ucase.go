@@ -16,6 +16,10 @@ func NewAuthUseCase(repo auth.Repo) auth.UseCase {
 	}
 }
 
+func (a authUseCase) GetAuthURL(ctx context.Context, authType string) (string, error) {
+	return a.authRepo.GetAuthURL(ctx, authType)
+}
+
 func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authModel.Callback) (*authModel.AuthUserInfo, error) {
 	userInfo, err := a.authRepo.GetAuthorizedUserInfo(ctx, authCallBack)
 	if err != nil {
@@ -23,8 +27,4 @@ func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authMo
 	}
 	//TODO: Event for new user
 	return userInfo, nil
-}
-
-func (a authUseCase) GetAuthURL(ctx context.Context, authType string) (string, error) {
-	return a.authRepo.GetAuthURL(ctx, authType)
 }
