@@ -47,5 +47,5 @@ func (a AuthController) AuthCallback(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, authCallback.NewResponse(userInfo))
+	c.PureJSON(200, authCallback.NewResponse(userInfo))
 }
