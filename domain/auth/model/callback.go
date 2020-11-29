@@ -1,6 +1,6 @@
-package entities
+package model
 
-type CallBack struct {
+type Callback struct {
 	AuthType string
 	State    string
 	Code     string

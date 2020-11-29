@@ -2,9 +2,10 @@ package auth
 
 import (
 	"context"
+	authModel "pixstall-user/domain/auth/model"
 )
 
 type Repo interface {
-	GetAuthorizedUserInfo(ctx context.Context, authCallBack string) (*string, error)
 	GetAuthURL(ctx context.Context, authType string) (string, error)
+	GetAuthorizedUserInfo(ctx context.Context, authCallBack authModel.Callback) (*authModel.AuthUserInfo, error)
 }

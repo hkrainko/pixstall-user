@@ -1,8 +1,11 @@
 package auth
 
-import "context"
+import (
+	"context"
+	authModel "pixstall-user/domain/auth/model"
+)
 
 type UseCase interface {
-	HandleAuthCallBack(ctx context.Context, authCallBack string) (*string, error)
+	HandleAuthCallback(ctx context.Context, authCallBack authModel.Callback) (*authModel.AuthUserInfo, error)
 	GetAuthURL(ctx context.Context, authType string) (string, error)
 }

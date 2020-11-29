@@ -1,0 +1,39 @@
+//cmd: protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/auth.proto
+syntax = "proto3";
+
+option go_package = ".;proto";
+
+service AuthService {
+  rpc GetAuthUrl (GetAuthUrlRequest) returns (GetAuthUrlResponse);
+  rpc CallBack (CallBackRequest) returns (CallBackResponse);
+}
+
+message GetAuthUrlRequest {
+  string authType = 1;
+}
+
+message GetAuthUrlResponse {
+  string authUrl = 1;
+}
+
+message CallBackRequest {
+  string state = 1;
+  string code = 2;
+  string authType = 3;
+}
+
+message CallBackResponse {
+  string id = 1;
+  string authType = 2;
+  string email = 3;
+  string birthday = 4;
+  string gender = 5;
+  string photoUrl = 6;
+}
+
+//enum AuthType {
+//  LOCAL = 0;
+//  FACEBOOK = 1;
+//  GOOGLE = 2;
+//  TWITTER = 3;
+//}
