@@ -1,6 +1,6 @@
 package model
 
-type Callback struct {
+type AuthCallback struct {
 	AuthType string
 	State    string
 	Code     string

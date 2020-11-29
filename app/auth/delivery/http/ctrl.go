@@ -2,10 +2,10 @@ package http
 
 import (
 	"github.com/gin-gonic/gin"
-	authCallback "pixstall-user/auth/delivery/auth-callback"
-	getAuthURL "pixstall-user/auth/delivery/get-auth-url"
-	"pixstall-user/domain/auth"
-	authModel "pixstall-user/domain/auth/model"
+	authCallback "pixstall-user/app/auth/delivery/auth-callback"
+	getAuthURL "pixstall-user/app/auth/delivery/get-auth-url"
+	"pixstall-user/app/domain/auth"
+	authModel "pixstall-user/app/domain/auth/model"
 )
 
 type AuthController struct{
@@ -38,7 +38,7 @@ func (a AuthController) AuthCallback(c *gin.Context) {
 	if state == "" || code == "0" {
 		return
 	}
-	userInfo, err := a.authUseCase.HandleAuthCallback(c, authModel.Callback{
+	userInfo, err := a.authUseCase.HandleAuthCallback(c, authModel.AuthCallback{
 		AuthType: authType,
 		State:    state,
 		Code:     code,

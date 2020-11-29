@@ -7,9 +7,9 @@ package main
 
 import (
 	"google.golang.org/grpc"
-	"pixstall-user/auth/delivery/http"
-	grpc2 "pixstall-user/auth/repository/grpc"
-	"pixstall-user/auth/usecase"
+	"pixstall-user/app/auth/delivery/http"
+	grpc2 "pixstall-user/app/auth/repository/grpc"
+	"pixstall-user/app/auth/usecase"
 )
 
 // Injectors from wire.go:

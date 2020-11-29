@@ -1,7 +1,7 @@
 package auth_callback
 
 import (
-	authModel "pixstall-user/domain/auth/model"
+	authModel "pixstall-user/app/domain/auth/model"
 )
 
 type Response struct {

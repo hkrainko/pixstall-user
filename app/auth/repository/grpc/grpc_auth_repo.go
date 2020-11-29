@@ -4,8 +4,8 @@ import (
 	"context"
 	"google.golang.org/grpc"
 	"log"
-	"pixstall-user/domain/auth"
-	authModel "pixstall-user/domain/auth/model"
+	"pixstall-user/app/domain/auth"
+	authModel "pixstall-user/app/domain/auth/model"
 	pb "pixstall-user/proto"
 )
 
@@ -32,7 +32,7 @@ func (g grpcAuthRepository) GetAuthURL(ctx context.Context, authType string) (st
 	return result.AuthUrl, nil
 }
 
-func (g grpcAuthRepository) GetAuthorizedUserInfo(ctx context.Context, authCallBack authModel.Callback) (*authModel.AuthUserInfo, error) {
+func (g grpcAuthRepository) GetAuthorizedUserInfo(ctx context.Context, authCallBack authModel.AuthCallback) (*authModel.AuthUserInfo, error) {
 	client := pb.NewAuthServiceClient(g.grpcConn)
 
 	result, err := client.CallBack(ctx, &pb.CallBackRequest{

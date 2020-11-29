@@ -5,9 +5,9 @@ package main
 import (
 	"github.com/google/wire"
 	"google.golang.org/grpc"
-	auth_deliv "pixstall-user/auth/delivery/http"
-	auth_repo "pixstall-user/auth/repository/grpc"
-	auth_ucase "pixstall-user/auth/usecase"
+	auth_deliv "pixstall-user/app/auth/delivery/http"
+	auth_repo "pixstall-user/app/auth/repository/grpc"
+	auth_ucase "pixstall-user/app/auth/usecase"
 )
 
 func InitAuthController(grpcConn *grpc.ClientConn) auth_deliv.AuthController {
