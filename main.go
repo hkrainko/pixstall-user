@@ -1,9 +1,13 @@
 package main
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/grpc"
 	"log"
+	"time"
 )
 
 func main() {
@@ -21,6 +25,15 @@ func main() {
 	//err = r.Run(":9002")
 	//fmt.Println(err)
 
+	ctx, cancel := context.WithTimeout(context.Background(), 10 * time.Second)
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	defer cancel()
+	defer func() {
+		if err = client.Disconnect(ctx); err != nil {
+			panic(err)
+		}
+	}()
+
 	//gRPC
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
@@ -32,7 +45,7 @@ func main() {
 
 	authGroup := r.Group("/auth")
 	{
-		ctr := InitAuthController(conn)
+		ctr := InitAuthController(conn, client)
 		authGroup.POST("/getAuthUrl", ctr.GetAuthURL)
 		authGroup.GET("/authCallback", ctr.AuthCallback)
 	}

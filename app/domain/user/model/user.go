@@ -1,7 +1,7 @@
 package model
 
 type User struct {
-	ID       string
+	UserID   string
 	AuthID   string
 	AuthType string
 	Token    string
@@ -11,3 +11,8 @@ type User struct {
 	PhotoURL string
 	State    UserState
 }
+
+func (u User) Error() string {
+	panic("implement me")
+}
+

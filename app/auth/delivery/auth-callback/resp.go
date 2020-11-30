@@ -17,7 +17,7 @@ type Response struct {
 
 func NewResponse(info *model.User) *Response {
 	return &Response{
-		ID:       info.ID,
+		ID:       info.UserID,
 		AuthType: info.AuthType,
 		Token:    info.Token,
 		Email:    info.Email,

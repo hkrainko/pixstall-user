@@ -36,11 +36,11 @@ func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authMo
 		if userError, isError := err.(model.UserError); isError {
 			switch userError {
 			case model.UserErrorNotFound:
-				newUser, error := a.createNewUser(ctx, authUserInfo)
-				if error != nil {
-					return nil, error
+				user, err := a.createNewUser(ctx, authUserInfo)
+				if err != nil {
+					return nil, user
 				}
-				return newUser, nil
+				return user, nil
 			default:
 				return nil, err
 			}
@@ -50,31 +50,17 @@ func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authMo
 	}
 
 	//Existing User
-	err = a.userRepo.SaveUser(ctx, user)
-	if err != nil {
-		return nil, err
-	}
+	//TODO: update token
 	
 	return user, nil
 }
 
 func (a authUseCase) createNewUser(ctx context.Context, authUserInfo *authModel.AuthUserInfo) (*model.User, error) {
 
-	newUser := model.User{
-		ID:       "",
-		AuthID:   authUserInfo.ID,
-		AuthType: authUserInfo.AuthType,
-		Token:    "",
-		Email:    authUserInfo.Email,
-		Birthday: authUserInfo.Birthday,
-		Gender:   authUserInfo.Gender,
-		PhotoURL: authUserInfo.PhotoURL,
-	}
-
-	err := a.userRepo.SaveUser(ctx, &newUser)
+	user, err := a.userRepo.SaveAuthUser(ctx, authUserInfo)
 	if err != nil {
 		return nil, err
 	}
 
-	return &newUser, nil
+	return user, nil
 }

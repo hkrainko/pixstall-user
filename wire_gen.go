@@ -6,18 +6,19 @@
 package main
 
 import (
+	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc"
 	"pixstall-user/app/auth/delivery/http"
 	grpc2 "pixstall-user/app/auth/repository/grpc"
 	"pixstall-user/app/auth/usecase"
-	"pixstall-user/app/user/repository/mongo"
+	mongo2 "pixstall-user/app/user/repository/mongo"
 )
 
 // Injectors from wire.go:
 
-func InitAuthController(grpcConn *grpc.ClientConn) http.AuthController {
+func InitAuthController(grpcConn *grpc.ClientConn, dbClient *mongo.Client) http.AuthController {
 	repo := grpc2.NewGRPCAuthRepository(grpcConn)
-	userRepo := mongo.NewMongoUserRepo()
+	userRepo := mongo2.NewMongoUserRepo(dbClient)
 	useCase := usecase.NewAuthUseCase(repo, userRepo)
 	authController := http.NewAuthController(useCase)
 	return authController
