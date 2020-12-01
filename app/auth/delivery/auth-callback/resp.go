@@ -1,7 +1,7 @@
 package auth_callback
 
 import (
-	"pixstall-user/app/domain/user/model"
+	authModel "pixstall-user/app/domain/auth/model"
 )
 
 type Response struct {
@@ -15,15 +15,15 @@ type Response struct {
 	State    string `json:"state"`
 }
 
-func NewResponse(info *model.User) *Response {
+func NewResponse(cb *authModel.HandledAuthCallback) *Response {
 	return &Response{
-		ID:       info.UserID,
-		AuthType: info.AuthType,
-		Token:    info.Token,
-		Email:    info.Email,
-		Birthday: info.Birthday,
-		Gender:   info.Gender,
-		PhotoURL: info.PhotoURL,
-		State:    string(info.State),
+		ID:       cb.UserID,
+		AuthType: cb.AuthType,
+		Token:    cb.Token,
+		Email:    cb.Email,
+		Birthday: cb.Birthday,
+		Gender:   cb.Gender,
+		PhotoURL: cb.PhotoURL,
+		State:    string(cb.State),
 	}
 }

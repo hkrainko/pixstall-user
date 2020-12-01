@@ -10,6 +10,7 @@ func (e UserError) Error() string {
 
 const (
 	UserErrorNotFound UserError = 0
-	UserErrorUnknown UserError = 1
+	UserErrorInactive UserError = 1
+	UserErrorUnknown UserError = 99
 )
 

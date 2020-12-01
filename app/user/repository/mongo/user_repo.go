@@ -22,9 +22,7 @@ func NewMongoUserRepo(client *mongo.Client) user.Repo {
 
 func (m mongoUserRepo) SaveAuthUser(ctx context.Context, authUserInfo *authModel.AuthUserInfo) (*userModel.User, error) {
 	collection := m.db.Collection("User")
-
-	token := "dummy_token"
-	result, err := collection.InsertOne(ctx, mongoModel.NewFromAuthUserInfo(authUserInfo, token))
+	result, err := collection.InsertOne(ctx, mongoModel.NewFromAuthUserInfo(authUserInfo))
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +31,6 @@ func (m mongoUserRepo) SaveAuthUser(ctx context.Context, authUserInfo *authModel
 		UserID:   result.InsertedID.(primitive.ObjectID).String(),
 		AuthID:   authUserInfo.ID,
 		AuthType: authUserInfo.AuthType,
-		Token:    token,
 		Email:    authUserInfo.Email,
 		Birthday: authUserInfo.Birthday,
 		Gender:   authUserInfo.Gender,

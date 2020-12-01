@@ -24,7 +24,6 @@ func (u *User) toDomainUser() *model.User {
 		UserID:   u.UserID,
 		AuthID:   u.AuthID,
 		AuthType: u.AuthType,
-		Token:    u.Token,
 		Email:    u.Email,
 		Birthday: u.Birthday,
 		Gender:   u.Gender,
@@ -38,7 +37,6 @@ func NewFromUser(u *model.User) *User {
 		UserID:   u.UserID,
 		AuthID:   u.AuthID,
 		AuthType: u.AuthType,
-		Token:    u.Token,
 		Email:    u.Email,
 		Birthday: u.Birthday,
 		Gender:   u.Gender,
@@ -47,12 +45,12 @@ func NewFromUser(u *model.User) *User {
 	}
 }
 
-func NewFromAuthUserInfo(u *authModel.AuthUserInfo, token string) *User {
+func NewFromAuthUserInfo(u *authModel.AuthUserInfo) *User {
 	return &User{
 		UserID:   "",
 		AuthID:   u.ID,
 		AuthType: u.AuthType,
-		Token:    token,
+		Token:    u.Token,
 		Email:    u.Email,
 		Birthday: u.Birthday,
 		Gender:   u.Gender,

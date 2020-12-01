@@ -38,7 +38,7 @@ func (a AuthController) AuthCallback(c *gin.Context) {
 	if state == "" || code == "0" {
 		return
 	}
-	userInfo, err := a.authUseCase.HandleAuthCallback(c, authModel.AuthCallback{
+	handledAuthCallback, err := a.authUseCase.HandleAuthCallback(c, authModel.AuthCallback{
 		AuthType: authType,
 		State:    state,
 		Code:     code,
@@ -47,5 +47,5 @@ func (a AuthController) AuthCallback(c *gin.Context) {
 		return
 	}
 
-	c.PureJSON(200, authCallback.NewResponse(userInfo))
+	c.PureJSON(200, authCallback.NewResponse(handledAuthCallback))
 }

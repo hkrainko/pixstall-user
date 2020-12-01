@@ -24,7 +24,7 @@ func (a authUseCase) GetAuthURL(ctx context.Context, authType string) (string, e
 	return a.authRepo.GetAuthURL(ctx, authType)
 }
 
-func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authModel.AuthCallback) (*model.User, error) {
+func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authModel.AuthCallback) (*authModel.HandledAuthCallback, error) {
 	authUserInfo, err := a.authRepo.GetAuthorizedUserInfo(ctx, authCallBack)
 	if err != nil {
 		return nil, err
@@ -40,7 +40,10 @@ func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authMo
 				if err != nil {
 					return nil, user
 				}
-				return user, nil
+				return &authModel.HandledAuthCallback{
+					Token: authUserInfo.Token,
+					User:  *user,
+				}, nil
 			default:
 				return nil, err
 			}
@@ -50,9 +53,14 @@ func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authMo
 	}
 
 	//Existing User
-	//TODO: update token
-	
-	return user, nil
+	if user.State == model.UserStateInactive {
+		return nil, model.UserErrorInactive
+	}
+
+	return &authModel.HandledAuthCallback{
+		Token: authUserInfo.Token,
+		User:  *user,
+	}, nil
 }
 
 func (a authUseCase) createNewUser(ctx context.Context, authUserInfo *authModel.AuthUserInfo) (*model.User, error) {
