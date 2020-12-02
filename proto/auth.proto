@@ -25,11 +25,10 @@ message CallBackRequest {
 message CallBackResponse {
   string id = 1;
   string authType = 2;
-  string token = 3;
-  string email = 4;
-  string birthday = 5;
-  string gender = 6;
-  string photoUrl = 7;
+  string email = 3;
+  string birthday = 4;
+  string gender = 5;
+  string photoUrl = 6;
 }
 
 //enum AuthType {

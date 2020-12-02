@@ -49,7 +49,6 @@ func (g grpcAuthRepository) GetAuthorizedUserInfo(ctx context.Context, authCallB
 	return &authModel.AuthUserInfo{
 		ID:       result.Id,
 		AuthType: result.AuthType,
-		Token:    result.Token,
 		Email:    result.Email,
 		Birthday: result.Birthday,
 		Gender:   result.Gender,
