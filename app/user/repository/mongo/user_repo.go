@@ -29,8 +29,9 @@ func (m mongoUserRepo) SaveAuthUser(ctx context.Context, authUserInfo *authModel
 	}
 
 	return &userModel.User{
-		UserID:   result.InsertedID.(primitive.ObjectID).String(),
+		UserID:   result.InsertedID.(primitive.ObjectID).Hex(),
 		AuthID:   authUserInfo.ID,
+		UserName: authUserInfo.UserName,
 		AuthType: authUserInfo.AuthType,
 		Email:    authUserInfo.Email,
 		Birthday: authUserInfo.Birthday,
@@ -43,6 +44,22 @@ func (m mongoUserRepo) SaveAuthUser(ctx context.Context, authUserInfo *authModel
 
 func (m mongoUserRepo) UpdateUser(ctx context.Context, user *userModel.User) error {
 	panic("implement me")
+}
+
+func (m mongoUserRepo) GetUserByAuthID(ctx context.Context, authID string) (*userModel.User, error) {
+	collection := m.db.Collection("User")
+	filter := bson.M{"authId": authID}
+	mongoUser := mongoModel.User{}
+	err := collection.FindOne(ctx, filter).Decode(&mongoUser)
+	if err != nil {
+		switch err {
+		case mongo.ErrNoDocuments:
+			return nil, userModel.UserErrorNotFound
+		default:
+			return nil, userModel.UserErrorUnknown
+		}
+	}
+	return mongoUser.ToDomainUser(), nil
 }
 
 func (m mongoUserRepo) GetUser(ctx context.Context, userID string) (*userModel.User, error) {

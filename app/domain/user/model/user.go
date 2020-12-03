@@ -3,6 +3,7 @@ package model
 type User struct {
 	UserID   string
 	AuthID   string
+	UserName string
 	AuthType string
 	Email    string
 	Birthday string

@@ -10,6 +10,7 @@ type User struct {
 	ObjectID primitive.ObjectID `bson:"_id,omitempty"`
 	UserID   string             `bson:"userId,omitempty"`
 	AuthID   string             `bson:"authId,omitempty"`
+	UserName string             `bson:"userName,omitempty"`
 	AuthType string             `bson:"authType,omitempty"`
 	Token    string             `bson:"token,omitempty"`
 	Email    string             `bson:"emil,omitempty"`
@@ -23,19 +24,7 @@ func (u *User) ToDomainUser() *model.User {
 	return &model.User{
 		UserID:   u.UserID,
 		AuthID:   u.AuthID,
-		AuthType: u.AuthType,
-		Email:    u.Email,
-		Birthday: u.Birthday,
-		Gender:   u.Gender,
-		PhotoURL: u.PhotoURL,
-		State:    u.State,
-	}
-}
-
-func NewFromUser(u *model.User) *User {
-	return &User{
-		UserID:   u.UserID,
-		AuthID:   u.AuthID,
+		UserName: u.UserName,
 		AuthType: u.AuthType,
 		Email:    u.Email,
 		Birthday: u.Birthday,
@@ -49,6 +38,7 @@ func NewFromAuthUserInfo(u *authModel.AuthUserInfo) *User {
 	return &User{
 		AuthID:   u.ID,
 		AuthType: u.AuthType,
+		UserName: u.UserName,
 		Email:    u.Email,
 		Birthday: u.Birthday,
 		Gender:   u.Gender,

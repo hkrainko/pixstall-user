@@ -34,7 +34,7 @@ func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authMo
 	}
 
 	//Get User
-	user, err := a.userRepo.GetUser(ctx, authUserInfo.ID)
+	user, err := a.userRepo.GetUserByAuthID(ctx, authUserInfo.ID)
 	if err != nil {
 		if userError, isError := err.(model.UserError); isError {
 			switch userError {

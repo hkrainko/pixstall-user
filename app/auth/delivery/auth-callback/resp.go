@@ -5,7 +5,8 @@ import (
 )
 
 type Response struct {
-	ID       string `json:"id"`
+	UserID   string `json:"userId"`
+	UserName string `json:"userName"`
 	AuthType string `json:"authType"`
 	Token    string `json:"token"`
 	Email    string `json:"email"`
@@ -17,7 +18,8 @@ type Response struct {
 
 func NewResponse(cb *authModel.HandledAuthCallback) *Response {
 	return &Response{
-		ID:       cb.UserID,
+		UserID:   cb.UserID,
+		UserName: cb.UserName,
 		AuthType: cb.AuthType,
 		Token:    cb.Token,
 		Email:    cb.Email,
