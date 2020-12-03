@@ -13,7 +13,7 @@ type User struct {
 	UserName string             `bson:"userName,omitempty"`
 	AuthType string             `bson:"authType,omitempty"`
 	Token    string             `bson:"token,omitempty"`
-	Email    string             `bson:"emil,omitempty"`
+	Email    string             `bson:"email,omitempty"`
 	Birthday string             `bson:"birthday,omitempty"`
 	Gender   string             `bson:"gender,omitempty"`
 	PhotoURL string             `bson:"photoUrl,omitempty"`

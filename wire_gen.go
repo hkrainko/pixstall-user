@@ -17,9 +17,9 @@ import (
 
 // Injectors from wire.go:
 
-func InitAuthController(grpcConn *grpc.ClientConn, dbClient *mongo.Client) http.AuthController {
+func InitAuthController(grpcConn *grpc.ClientConn, db *mongo.Database) http.AuthController {
 	repo := grpc2.NewGRPCAuthRepository(grpcConn)
-	userRepo := mongo2.NewMongoUserRepo(dbClient)
+	userRepo := mongo2.NewMongoUserRepo(db)
 	tokenRepo := jwt.NewJWTTokenRepo()
 	useCase := usecase.NewAuthUseCase(repo, userRepo, tokenRepo)
 	authController := http.NewAuthController(useCase)

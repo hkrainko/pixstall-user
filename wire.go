@@ -13,7 +13,7 @@ import (
 	user_repo "pixstall-user/app/user/repository/mongo"
 )
 
-func InitAuthController(grpcConn *grpc.ClientConn, dbClient *mongo.Client) auth_deliv.AuthController {
+func InitAuthController(grpcConn *grpc.ClientConn, db *mongo.Database) auth_deliv.AuthController {
 	wire.Build(
 		auth_deliv.NewAuthController,
 		auth_ucase.NewAuthUseCase,

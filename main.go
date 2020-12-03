@@ -26,10 +26,13 @@ func main() {
 	//fmt.Println(err)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10 * time.Second)
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	dbClient, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	if err != nil {
+		panic(err)
+	}
 	defer cancel()
 	defer func() {
-		if err = client.Disconnect(ctx); err != nil {
+		if err = dbClient.Disconnect(ctx); err != nil {
 			panic(err)
 		}
 	}()
@@ -45,7 +48,7 @@ func main() {
 
 	authGroup := r.Group("/auth")
 	{
-		ctr := InitAuthController(conn, client)
+		ctr := InitAuthController(conn, dbClient.Database("pixstall-user"))
 		authGroup.POST("/getAuthUrl", ctr.GetAuthURL)
 		authGroup.GET("/authCallback", ctr.AuthCallback)
 	}

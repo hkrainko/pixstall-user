@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"context"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,9 +16,9 @@ type mongoUserRepo struct {
 	db *mongo.Database
 }
 
-func NewMongoUserRepo(client *mongo.Client) user.Repo {
+func NewMongoUserRepo(db *mongo.Database) user.Repo {
 	return &mongoUserRepo{
-		db: client.Database("user"),
+		db: db,
 	}
 }
 
@@ -42,8 +43,38 @@ func (m mongoUserRepo) SaveAuthUser(ctx context.Context, authUserInfo *authModel
 
 }
 
-func (m mongoUserRepo) UpdateUser(ctx context.Context, user *userModel.User) error {
-	panic("implement me")
+func (m mongoUserRepo) UpdateUser(ctx context.Context, userID string, updater *userModel.UserUpdater) error {
+	collection := m.db.Collection("User")
+
+	filter := bson.M{"userId": userID}
+	update := bson.M{}
+
+	if updater.UserName != "" {
+		update["userName"] = updater.UserName
+	}
+	if updater.Email != "" {
+		update["email"] = updater.Email
+	}
+	if updater.Birthday != "" {
+		update["birthday"] = updater.Birthday
+	}
+	if updater.Gender != "" {
+		update["gender"] = updater.Gender
+	}
+	if updater.PhotoURL != "" {
+		update["photoUrl"] = updater.PhotoURL
+	}
+	if updater.State != "" {
+		update["state"] = updater.State
+	}
+
+	result, err := collection.UpdateOne(ctx, filter, bson.M{"$set": update})
+
+	if err != nil {
+		return err
+	}
+	fmt.Printf("UpdateUser success: %v", result.UpsertedID)
+	return nil
 }
 
 func (m mongoUserRepo) GetUserByAuthID(ctx context.Context, authID string) (*userModel.User, error) {
