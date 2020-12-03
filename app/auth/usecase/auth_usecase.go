@@ -4,6 +4,7 @@ import (
 	"context"
 	"pixstall-user/app/domain/auth"
 	authModel "pixstall-user/app/domain/auth/model"
+	"pixstall-user/app/domain/token"
 	"pixstall-user/app/domain/user"
 	"pixstall-user/app/domain/user/model"
 )
@@ -11,12 +12,14 @@ import (
 type authUseCase struct {
 	authRepo auth.Repo
 	userRepo user.Repo
+	tokenRepo token.Repo
 }
 
-func NewAuthUseCase(authRepo auth.Repo, userRepo user.Repo) auth.UseCase {
+func NewAuthUseCase(authRepo auth.Repo, userRepo user.Repo, tokenRepo token.Repo) auth.UseCase {
 	return &authUseCase{
 		authRepo: authRepo,
 		userRepo: userRepo,
+		tokenRepo: tokenRepo,
 	}
 }
 
@@ -38,10 +41,14 @@ func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authMo
 			case model.UserErrorNotFound:
 				user, err := a.createNewUser(ctx, authUserInfo)
 				if err != nil {
-					return nil, user
+					return nil, err
+				}
+				authToken, err := a.tokenRepo.GenerateAuthToken(ctx, user.UserID)
+				if err != nil {
+					return nil, err
 				}
 				return &authModel.HandledAuthCallback{
-					Token: authUserInfo.Token,
+					Token: authToken,
 					User:  *user,
 				}, nil
 			default:
@@ -52,13 +59,18 @@ func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authMo
 		}
 	}
 
-	//Existing User
-	if user.State == model.UserStateInactive {
-		return nil, model.UserErrorInactive
+	if user.State == model.UserStateTerminated {
+		return nil, model.UserErrorTerminated
+	}
+
+	//Existing User - generate new token
+	authToken, err := a.tokenRepo.GenerateAuthToken(ctx, user.UserID)
+	if err != nil {
+		return nil, err
 	}
 
 	return &authModel.HandledAuthCallback{
-		Token: authUserInfo.Token,
+		Token: authToken,
 		User:  *user,
 	}, nil
 }

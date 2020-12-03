@@ -19,7 +19,7 @@ type User struct {
 	State    model.UserState    `bson:"state,omitempty"`
 }
 
-func (u *User) toDomainUser() *model.User {
+func (u *User) ToDomainUser() *model.User {
 	return &model.User{
 		UserID:   u.UserID,
 		AuthID:   u.AuthID,
@@ -47,10 +47,8 @@ func NewFromUser(u *model.User) *User {
 
 func NewFromAuthUserInfo(u *authModel.AuthUserInfo) *User {
 	return &User{
-		UserID:   "",
 		AuthID:   u.ID,
 		AuthType: u.AuthType,
-		Token:    u.Token,
 		Email:    u.Email,
 		Birthday: u.Birthday,
 		Gender:   u.Gender,

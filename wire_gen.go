@@ -11,6 +11,7 @@ import (
 	"pixstall-user/app/auth/delivery/http"
 	grpc2 "pixstall-user/app/auth/repository/grpc"
 	"pixstall-user/app/auth/usecase"
+	"pixstall-user/app/token/repo/jwt"
 	mongo2 "pixstall-user/app/user/repository/mongo"
 )
 
@@ -19,7 +20,8 @@ import (
 func InitAuthController(grpcConn *grpc.ClientConn, dbClient *mongo.Client) http.AuthController {
 	repo := grpc2.NewGRPCAuthRepository(grpcConn)
 	userRepo := mongo2.NewMongoUserRepo(dbClient)
-	useCase := usecase.NewAuthUseCase(repo, userRepo)
+	tokenRepo := jwt.NewJWTTokenRepo()
+	useCase := usecase.NewAuthUseCase(repo, userRepo, tokenRepo)
 	authController := http.NewAuthController(useCase)
 	return authController
 }

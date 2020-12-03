@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"context"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	authModel "pixstall-user/app/domain/auth/model"
@@ -45,5 +46,17 @@ func (m mongoUserRepo) UpdateUser(ctx context.Context, user *userModel.User) err
 }
 
 func (m mongoUserRepo) GetUser(ctx context.Context, userID string) (*userModel.User, error) {
-	panic("implement me")
+	collection := m.db.Collection("User")
+	filter := bson.M{"_id": userID}
+	mongoUser := mongoModel.User{}
+	err := collection.FindOne(ctx, filter).Decode(&mongoUser)
+	if err != nil {
+		switch err {
+		case mongo.ErrNoDocuments:
+			return nil, userModel.UserErrorNotFound
+		default:
+			return nil, userModel.UserErrorUnknown
+		}
+	}
+	return mongoUser.ToDomainUser(), nil
 }
