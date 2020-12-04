@@ -102,13 +102,39 @@ func TestMongoUserRepo_UpdateUser_userNameOnly(t *testing.T) {
 	assert.Equal(t, model.UserStateActive, mongoUser.State)
 }
 
-func TestMongoUserRepo_UpdateUser_BeArtist(t *testing.T) {
+func TestMongoUserRepo_UpdateUserByAuthID_userNameOnly(t *testing.T) {
 	cleanAll()
 	objectID := insertDummyUser(ctx, "test_user_id", model.UserStatePending)
+	updater := model.UserUpdater{
+		UserID:     "new_UserID",
+		UserName:   "new_UserName",
+		State:      model.UserStateActive,
+		ArtistInfo: nil,
+	}
+	err := repo.UpdateUserByAuthID(ctx, "Dummy_AuthID", &updater)
+	assert.NoError(t, err)
+
+	mongoUser := mongoModel.User{}
+	err = db.Collection(UserCollection).FindOne(ctx, bson.M{"_id": objectID}).Decode(&mongoUser)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "new_UserID", mongoUser.UserID)
+	assert.Equal(t, "new_UserName", mongoUser.UserName)
+	assert.Equal(t, "Dummy_Email", mongoUser.Email)
+	assert.Equal(t, "20200101", mongoUser.Birthday)
+	assert.Equal(t, "M", mongoUser.Gender)
+	assert.Equal(t, "Dummy_PhotoURL", mongoUser.PhotoURL)
+	assert.Equal(t, model.UserStateActive, mongoUser.State)
+}
+
+func TestMongoUserRepo_UpdateUserByAuthID_BeArtist(t *testing.T) {
+	cleanAll()
+	objectID := insertDummyUser(ctx, "Dummy_AuthID", model.UserStatePending)
 	isArtist := true
 	yearOfDrawing := 5
 	SelfIntro := "Hello"
 	updater := model.UserUpdater{
+		UserID:   "new_UserID",
 		UserName: "new_UserName",
 		State:    model.UserStateActive,
 		IsArtist: &isArtist,
@@ -118,13 +144,14 @@ func TestMongoUserRepo_UpdateUser_BeArtist(t *testing.T) {
 			SelfIntro:     &SelfIntro,
 		},
 	}
-	err := repo.UpdateUser(ctx, "test_user_id", &updater)
+	err := repo.UpdateUserByAuthID(ctx, "Dummy_AuthID", &updater)
 	assert.NoError(t, err)
 
 	mongoUser := mongoModel.User{}
 	err = db.Collection(UserCollection).FindOne(ctx, bson.M{"_id": objectID}).Decode(&mongoUser)
 	assert.NoError(t, err)
 
+	assert.Equal(t, "new_UserID", mongoUser.UserID)
 	assert.Equal(t, "new_UserName", mongoUser.UserName)
 	assert.Equal(t, "Dummy_Email", mongoUser.Email)
 	assert.Equal(t, "20200101", mongoUser.Birthday)

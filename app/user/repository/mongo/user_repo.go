@@ -34,8 +34,8 @@ func (m mongoUserRepo) SaveAuthUser(ctx context.Context, authUserInfo *authModel
 		return nil, err
 	}
 
+	fmt.Printf("SaveAuthUser %v success", result.InsertedID.(primitive.ObjectID).Hex())
 	return &userModel.User{
-		UserID:   result.InsertedID.(primitive.ObjectID).Hex(),
 		AuthID:   authUserInfo.ID,
 		UserName: authUserInfo.UserName,
 		AuthType: authUserInfo.AuthType,
@@ -54,6 +54,59 @@ func (m mongoUserRepo) UpdateUser(ctx context.Context, userID string, updater *u
 	filter := bson.M{"userId": userID}
 	update := bson.M{}
 
+	if updater.UserName != "" {
+		update["userName"] = updater.UserName
+	}
+	if updater.Email != "" {
+		update["email"] = updater.Email
+	}
+	if updater.Birthday != "" {
+		update["birthday"] = updater.Birthday
+	}
+	if updater.Gender != "" {
+		update["gender"] = updater.Gender
+	}
+	if updater.PhotoURL != "" {
+		update["photoUrl"] = updater.PhotoURL
+	}
+	if updater.State != "" {
+		update["state"] = updater.State
+	}
+	if updater.IsArtist != nil {
+		update["isArtist"] = updater.IsArtist
+	}
+	if updater.IsArtist != nil && *updater.IsArtist && updater.ArtistInfo != nil {
+		if updater.ArtistInfo.YearOfDrawing != nil {
+			update["artistInfo.yearOfDrawing"] = updater.ArtistInfo.YearOfDrawing
+		}
+		if updater.ArtistInfo.ArtTypes != nil {
+			update["artistInfo.artTypes"] = updater.ArtistInfo.ArtTypes
+		}
+		if updater.ArtistInfo.SelfIntro != nil {
+			update["artistInfo.selfIntro"] = updater.ArtistInfo.SelfIntro
+		}
+	}
+
+	result, err := collection.UpdateOne(ctx, filter, bson.M{"$set": update})
+
+	if err != nil {
+		return err
+	}
+	fmt.Printf("UpdateUser success: %v", result.UpsertedID)
+	return nil
+}
+
+func (m mongoUserRepo) UpdateUserByAuthID(ctx context.Context, authID string, updater *userModel.UserUpdater) error {
+	collection := m.db.Collection(UserCollection)
+
+	filter := bson.M{"authId": authID}
+	update := bson.M{}
+
+	if updater.UserID != "" {
+		update["userId"] = updater.UserID
+	} else {
+		//TODO: return error
+	}
 	if updater.UserName != "" {
 		update["userName"] = updater.UserName
 	}

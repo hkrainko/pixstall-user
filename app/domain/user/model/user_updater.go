@@ -1,6 +1,7 @@
 package model
 
 type UserUpdater struct {
+	UserID     string
 	UserName   string
 	Email      string
 	Birthday   string

@@ -1,6 +1,7 @@
 package model
 
 type RegInfo struct {
+	AuthID        string     `json:"authId"`
 	UserID        string     `json:"userId"`
 	DisplayName   string     `json:"name"`
 	Email         string     `json:"email"`

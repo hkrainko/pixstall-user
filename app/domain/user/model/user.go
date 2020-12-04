@@ -2,7 +2,6 @@ package model
 
 type User struct {
 	UserID     string
-	ArtistID   string
 	AuthID     string
 	UserName   string
 	AuthType   string
