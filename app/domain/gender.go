@@ -1,4 +1,4 @@
-package gender
+package domain
 
 import "errors"
 

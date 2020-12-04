@@ -53,6 +53,18 @@ func main() {
 		authGroup.GET("/authCallback", ctr.AuthCallback)
 	}
 
+	regGroup := r.Group("/reg")
+	{
+		ctr := InitRegController(conn, dbClient.Database("pixstall-user"))
+		regGroup.POST("/register", ctr.Registration)
+	}
+
+	//userGroup := r.Group("/user")
+	//{
+	//	ctr := InitUserController(conn, dbClient.Database("pixstall-user"))
+	//	regGroup.POST("/")
+	//}
+
 	err = r.Run(":9001")
 	print(err)
 }

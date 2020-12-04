@@ -1,4 +1,4 @@
-package userstate
+package domain
 
 type UserState string
 const (

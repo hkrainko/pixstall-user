@@ -8,13 +8,13 @@ import (
 	authModel "pixstall-user/app/domain/auth/model"
 )
 
-type AuthController struct{
+type AuthController struct {
 	authUseCase auth.UseCase
 }
 
-func NewAuthController(usecase auth.UseCase) AuthController {
+func NewAuthController(useCase auth.UseCase) AuthController {
 	return AuthController{
-		authUseCase: usecase,
+		authUseCase: useCase,
 	}
 
 }

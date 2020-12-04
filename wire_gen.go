@@ -11,8 +11,12 @@ import (
 	"pixstall-user/app/auth/delivery/http"
 	grpc2 "pixstall-user/app/auth/repository/grpc"
 	"pixstall-user/app/auth/usecase"
+	http2 "pixstall-user/app/reg/delivery/http"
+	usecase2 "pixstall-user/app/reg/usecase"
 	"pixstall-user/app/token/repo/jwt"
+	http3 "pixstall-user/app/user/delivery/http"
 	mongo2 "pixstall-user/app/user/repository/mongo"
+	usecase3 "pixstall-user/app/user/usecase"
 )
 
 // Injectors from wire.go:
@@ -24,4 +28,18 @@ func InitAuthController(grpcConn *grpc.ClientConn, db *mongo.Database) http.Auth
 	useCase := usecase.NewAuthUseCase(repo, userRepo, tokenRepo)
 	authController := http.NewAuthController(useCase)
 	return authController
+}
+
+func InitRegController(grpcConn *grpc.ClientConn, db *mongo.Database) http2.RegController {
+	repo := mongo2.NewMongoUserRepo(db)
+	useCase := usecase2.NewRegUseCase(repo)
+	regController := http2.NewRegController(useCase)
+	return regController
+}
+
+func InitUserController(grpcConn *grpc.ClientConn, db *mongo.Database) http3.UserController {
+	repo := mongo2.NewMongoUserRepo(db)
+	useCase := usecase3.NewUserUseCase(repo)
+	userController := http3.NewUserController(useCase)
+	return userController
 }
