@@ -2,7 +2,7 @@ package model
 
 type User struct {
 	UserID     string
-	AccID      string
+	ArtistID   string
 	AuthID     string
 	UserName   string
 	AuthType   string
@@ -10,7 +10,7 @@ type User struct {
 	Birthday   string
 	Gender     string
 	PhotoURL   string
-	isArtist   bool
+	IsArtist   bool
 	ArtistInfo ArtistInfo
 	State      UserState
 }

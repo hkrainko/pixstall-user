@@ -16,6 +16,11 @@ type mongoUserRepo struct {
 	db *mongo.Database
 }
 
+const (
+	DBName         = "pixstall-user"
+	UserCollection = "User"
+)
+
 func NewMongoUserRepo(db *mongo.Database) user.Repo {
 	return &mongoUserRepo{
 		db: db,
@@ -23,7 +28,7 @@ func NewMongoUserRepo(db *mongo.Database) user.Repo {
 }
 
 func (m mongoUserRepo) SaveAuthUser(ctx context.Context, authUserInfo *authModel.AuthUserInfo) (*userModel.User, error) {
-	collection := m.db.Collection("User")
+	collection := m.db.Collection(UserCollection)
 	result, err := collection.InsertOne(ctx, mongoModel.NewFromAuthUserInfo(authUserInfo))
 	if err != nil {
 		return nil, err
@@ -44,7 +49,7 @@ func (m mongoUserRepo) SaveAuthUser(ctx context.Context, authUserInfo *authModel
 }
 
 func (m mongoUserRepo) UpdateUser(ctx context.Context, userID string, updater *userModel.UserUpdater) error {
-	collection := m.db.Collection("User")
+	collection := m.db.Collection(UserCollection)
 
 	filter := bson.M{"userId": userID}
 	update := bson.M{}
@@ -67,6 +72,20 @@ func (m mongoUserRepo) UpdateUser(ctx context.Context, userID string, updater *u
 	if updater.State != "" {
 		update["state"] = updater.State
 	}
+	if updater.IsArtist != nil {
+		update["isArtist"] = updater.IsArtist
+	}
+	if updater.IsArtist != nil && *updater.IsArtist && updater.ArtistInfo != nil {
+		if updater.ArtistInfo.YearOfDrawing != nil {
+			update["artistInfo.yearOfDrawing"] = updater.ArtistInfo.YearOfDrawing
+		}
+		if updater.ArtistInfo.ArtTypes != nil {
+			update["artistInfo.artTypes"] = updater.ArtistInfo.ArtTypes
+		}
+		if updater.ArtistInfo.SelfIntro != nil {
+			update["artistInfo.selfIntro"] = updater.ArtistInfo.SelfIntro
+		}
+	}
 
 	result, err := collection.UpdateOne(ctx, filter, bson.M{"$set": update})
 
@@ -78,7 +97,7 @@ func (m mongoUserRepo) UpdateUser(ctx context.Context, userID string, updater *u
 }
 
 func (m mongoUserRepo) GetUserByAuthID(ctx context.Context, authID string) (*userModel.User, error) {
-	collection := m.db.Collection("User")
+	collection := m.db.Collection(UserCollection)
 	filter := bson.M{"authId": authID}
 	mongoUser := mongoModel.User{}
 	err := collection.FindOne(ctx, filter).Decode(&mongoUser)
@@ -94,7 +113,7 @@ func (m mongoUserRepo) GetUserByAuthID(ctx context.Context, authID string) (*use
 }
 
 func (m mongoUserRepo) GetUser(ctx context.Context, userID string) (*userModel.User, error) {
-	collection := m.db.Collection("User")
+	collection := m.db.Collection(UserCollection)
 	filter := bson.M{"_id": userID}
 	mongoUser := mongoModel.User{}
 	err := collection.FindOne(ctx, filter).Decode(&mongoUser)

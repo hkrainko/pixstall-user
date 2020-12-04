@@ -7,6 +7,6 @@ type UserUpdater struct {
 	Gender     string
 	PhotoURL   string
 	State      UserState
-	IsArtist   bool
-	ArtistInfo ArtistInfo
+	IsArtist   *bool
+	ArtistInfo *ArtistInfo
 }

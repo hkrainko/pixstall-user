@@ -3,6 +3,7 @@ package mongo
 import (
 	"context"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -12,7 +13,6 @@ import (
 	"pixstall-user/app/domain/user/model"
 	mongoModel "pixstall-user/app/user/repository/mongo/model"
 	"testing"
-	"github.com/stretchr/testify/assert"
 )
 
 var db *mongo.Database
@@ -21,8 +21,7 @@ var repo user.Repo
 var ctx context.Context
 
 const (
-	DBName = "pixstall-user-test"
-	UserCollection = "User"
+	TestDBName = "pixstall-user-test"
 )
 
 func TestMain(m *testing.M) {
@@ -40,7 +39,7 @@ func setup() {
 	if err != nil {
 		panic(err)
 	}
-	db = dbClient.Database(DBName)
+	db = dbClient.Database(TestDBName)
 	repo = NewMongoUserRepo(db)
 }
 
@@ -63,8 +62,7 @@ func TestMongoUserRepo_UpdateUser(t *testing.T) {
 		Gender:     "F",
 		PhotoURL:   "new_PhotoURL",
 		State:      model.UserStateActive,
-		IsArtist:   false,
-		ArtistInfo: model.ArtistInfo{},
+		ArtistInfo: nil,
 	}
 	err := repo.UpdateUser(ctx, "test_user_id", &updater)
 	assert.NoError(t, err)
@@ -87,8 +85,7 @@ func TestMongoUserRepo_UpdateUser_userNameOnly(t *testing.T) {
 	updater := model.UserUpdater{
 		UserName:   "new_UserName",
 		State:      model.UserStateActive,
-		IsArtist:   false,
-		ArtistInfo: model.ArtistInfo{},
+		ArtistInfo: nil,
 	}
 	err := repo.UpdateUser(ctx, "test_user_id", &updater)
 	assert.NoError(t, err)
@@ -102,6 +99,42 @@ func TestMongoUserRepo_UpdateUser_userNameOnly(t *testing.T) {
 	assert.Equal(t, "20200101", mongoUser.Birthday)
 	assert.Equal(t, "M", mongoUser.Gender)
 	assert.Equal(t, "Dummy_PhotoURL", mongoUser.PhotoURL)
+	assert.Equal(t, model.UserStateActive, mongoUser.State)
+}
+
+func TestMongoUserRepo_UpdateUser_BeArtist(t *testing.T) {
+	cleanAll()
+	objectID := insertDummyUser(ctx, "test_user_id", model.UserStatePending)
+	isArtist := true
+	yearOfDrawing := 5
+	SelfIntro := "Hello"
+	updater := model.UserUpdater{
+		UserName: "new_UserName",
+		State:    model.UserStateActive,
+		IsArtist: &isArtist,
+		ArtistInfo: &model.ArtistInfo{
+			YearOfDrawing: &yearOfDrawing,
+			ArtTypes:      &[]string{"A", "B", "C", "D", "E"},
+			SelfIntro:     &SelfIntro,
+		},
+	}
+	err := repo.UpdateUser(ctx, "test_user_id", &updater)
+	assert.NoError(t, err)
+
+	mongoUser := mongoModel.User{}
+	err = db.Collection(UserCollection).FindOne(ctx, bson.M{"_id": objectID}).Decode(&mongoUser)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "new_UserName", mongoUser.UserName)
+	assert.Equal(t, "Dummy_Email", mongoUser.Email)
+	assert.Equal(t, "20200101", mongoUser.Birthday)
+	assert.Equal(t, "M", mongoUser.Gender)
+	assert.Equal(t, "Dummy_PhotoURL", mongoUser.PhotoURL)
+	assert.True(t, mongoUser.IsArtist)
+	assert.NotNil(t, mongoUser.ArtistInfo)
+	assert.Equal(t, 5, *mongoUser.ArtistInfo.YearOfDrawing)
+	assert.Equal(t, 5, len(*mongoUser.ArtistInfo.ArtTypes))
+	assert.Equal(t, "Hello", *mongoUser.ArtistInfo.SelfIntro)
 	assert.Equal(t, model.UserStateActive, mongoUser.State)
 }
 

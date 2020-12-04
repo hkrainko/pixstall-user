@@ -7,17 +7,19 @@ import (
 )
 
 type User struct {
-	ObjectID primitive.ObjectID `bson:"_id,omitempty"`
-	UserID   string             `bson:"userId,omitempty"`
-	AuthID   string             `bson:"authId,omitempty"`
-	UserName string             `bson:"userName,omitempty"`
-	AuthType string             `bson:"authType,omitempty"`
-	Token    string             `bson:"token,omitempty"`
-	Email    string             `bson:"email,omitempty"`
-	Birthday string             `bson:"birthday,omitempty"`
-	Gender   string             `bson:"gender,omitempty"`
-	PhotoURL string             `bson:"photoUrl,omitempty"`
-	State    model.UserState    `bson:"state,omitempty"`
+	ObjectID   primitive.ObjectID `bson:"_id,omitempty"`
+	UserID     string             `bson:"userId,omitempty"`
+	AuthID     string             `bson:"authId,omitempty"`
+	UserName   string             `bson:"userName,omitempty"`
+	AuthType   string             `bson:"authType,omitempty"`
+	Token      string             `bson:"token,omitempty"`
+	Email      string             `bson:"email,omitempty"`
+	Birthday   string             `bson:"birthday,omitempty"`
+	Gender     string             `bson:"gender,omitempty"`
+	PhotoURL   string             `bson:"photoUrl,omitempty"`
+	IsArtist   bool               `bson:"isArtist"`
+	ArtistInfo model.ArtistInfo   `bson:"artistInfo,omitempty"`
+	State      model.UserState    `bson:"state,omitempty"`
 }
 
 func (u *User) ToDomainUser() *model.User {
@@ -30,6 +32,8 @@ func (u *User) ToDomainUser() *model.User {
 		Birthday: u.Birthday,
 		Gender:   u.Gender,
 		PhotoURL: u.PhotoURL,
+		IsArtist: u.IsArtist,
+		ArtistInfo: u.ArtistInfo,
 		State:    u.State,
 	}
 }
