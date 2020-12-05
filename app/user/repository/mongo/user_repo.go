@@ -18,7 +18,7 @@ type mongoUserRepo struct {
 
 const (
 	DBName         = "pixstall-user"
-	UserCollection = "User"
+	UserCollection = "Users"
 )
 
 func NewMongoUserRepo(db *mongo.Database) user.Repo {
