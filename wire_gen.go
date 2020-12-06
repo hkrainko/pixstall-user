@@ -34,8 +34,8 @@ func InitAuthController(grpcConn *grpc.ClientConn, db *mongo.Database) http.Auth
 
 func InitRegController(grpcConn *grpc.ClientConn, db *mongo.Database, ch *amqp.Channel) http2.RegController {
 	repo := mongo2.NewMongoUserRepo(db)
-	artistRepo := rabbitmq.NewRabbitMQArtistRepo(ch)
-	useCase := usecase2.NewRegUseCase(repo, artistRepo)
+	msgBroker := rabbitmq.NewRabbitMQUserMsgBroker(ch)
+	useCase := usecase2.NewRegUseCase(repo, msgBroker)
 	regController := http2.NewRegController(useCase)
 	return regController
 }

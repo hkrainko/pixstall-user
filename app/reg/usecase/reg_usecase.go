@@ -10,14 +10,14 @@ import (
 )
 
 type regUseCase struct {
-	userRepo   user.Repo
-	artistRepo user.MsgBroker
+	userRepo      user.Repo
+	userMsgBroker user.MsgBroker
 }
 
-func NewRegUseCase(userRepo user.Repo, artistRepo user.MsgBroker) reg.UseCase {
+func NewRegUseCase(userRepo user.Repo, userMsgBroker user.MsgBroker) reg.UseCase {
 	return &regUseCase{
-		userRepo: userRepo,
-		artistRepo: artistRepo,
+		userRepo:      userRepo,
+		userMsgBroker: userMsgBroker,
 	}
 }
 
@@ -40,13 +40,13 @@ func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo) error
 	}
 
 	if info.RegAsArtist {
-		err := r.artistRepo.SendRegisterArtistMsg(ctx, info)
+		err := r.userMsgBroker.SendRegisterArtistMsg(ctx, info)
 		//not return err
 		if err != nil {
 			log.Printf("SendRegisterArtistMsg err %v", err)
 		}
 	} else {
-		err := r.artistRepo.SendRegisterUserMsg(ctx, info)
+		err := r.userMsgBroker.SendRegisterUserMsg(ctx, info)
 		//not return err
 		if err != nil {
 			log.Printf("SendRegisterUserMsg err %v", err)

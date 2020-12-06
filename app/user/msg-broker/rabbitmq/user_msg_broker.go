@@ -10,17 +10,17 @@ import (
 	msgBrokerModel "pixstall-user/app/user/msg-broker/model"
 )
 
-type rabbitMQArtistRepo struct {
+type rabbitMQUserMsgBroker struct {
 	ch *amqp.Channel
 }
 
-func NewRabbitMQArtistRepo(ch *amqp.Channel) user.MsgBroker {
-	return &rabbitMQArtistRepo{
+func NewRabbitMQUserMsgBroker(ch *amqp.Channel) user.MsgBroker {
+	return &rabbitMQUserMsgBroker{
 		ch: ch,
 	}
 }
 
-func (r *rabbitMQArtistRepo) SendRegisterArtistMsg(ctx context.Context, info *model.RegInfo) error {
+func (r *rabbitMQUserMsgBroker) SendRegisterArtistMsg(ctx context.Context, info *model.RegInfo) error {
 	b, err := json.Marshal(msgBrokerModel.NewRegInfoFromDomainRegInfo(info))
 	if err != nil {
 		return err
@@ -41,7 +41,7 @@ func (r *rabbitMQArtistRepo) SendRegisterArtistMsg(ctx context.Context, info *mo
 	return nil
 }
 
-func (r *rabbitMQArtistRepo) SendArtistUpdateMsg(ctx context.Context, updater *domainUserModel.UserUpdater) error {
+func (r *rabbitMQUserMsgBroker) SendArtistUpdateMsg(ctx context.Context, updater *domainUserModel.UserUpdater) error {
 	b, err := json.Marshal(msgBrokerModel.NewUserUpdaterFromDomainUserUpdater(updater))
 	if err != nil {
 		return err
@@ -62,7 +62,7 @@ func (r *rabbitMQArtistRepo) SendArtistUpdateMsg(ctx context.Context, updater *d
 	return nil
 }
 
-func (r *rabbitMQArtistRepo) SendRegisterUserMsg(ctx context.Context, info *model.RegInfo) error {
+func (r *rabbitMQUserMsgBroker) SendRegisterUserMsg(ctx context.Context, info *model.RegInfo) error {
 	b, err := json.Marshal(msgBrokerModel.NewRegInfoFromDomainRegInfo(info))
 	if err != nil {
 		return err
@@ -83,7 +83,7 @@ func (r *rabbitMQArtistRepo) SendRegisterUserMsg(ctx context.Context, info *mode
 	return nil
 }
 
-func (r *rabbitMQArtistRepo) SendUserUpdateMsg(ctx context.Context, updater *domainUserModel.UserUpdater) error {
+func (r *rabbitMQUserMsgBroker) SendUserUpdateMsg(ctx context.Context, updater *domainUserModel.UserUpdater) error {
 	b, err := json.Marshal(msgBrokerModel.NewUserUpdaterFromDomainUserUpdater(updater))
 	if err != nil {
 		return err

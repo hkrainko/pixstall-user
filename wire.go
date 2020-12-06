@@ -14,7 +14,7 @@ import (
 	reg_ucase "pixstall-user/app/reg/usecase"
 	token_repo "pixstall-user/app/token/repo/jwt"
 	user_deliv "pixstall-user/app/user/delivery/http"
-	artist_repo "pixstall-user/app/user/msg-broker/rabbitmq"
+	user_msg_broker "pixstall-user/app/user/msg-broker/rabbitmq"
 	user_repo "pixstall-user/app/user/repo/mongo"
 	user_ucase "pixstall-user/app/user/usecase"
 )
@@ -35,7 +35,7 @@ func InitRegController(grpcConn *grpc.ClientConn, db *mongo.Database, ch *amqp.C
 		reg_deliv.NewRegController,
 		user_repo.NewMongoUserRepo,
 		reg_ucase.NewRegUseCase,
-		artist_repo.NewRabbitMQArtistRepo,
+		user_msg_broker.NewRabbitMQUserMsgBroker,
 	)
 	return reg_deliv.RegController{}
 }
