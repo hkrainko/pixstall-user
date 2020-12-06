@@ -6,16 +6,18 @@
 package main
 
 import (
+	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc"
 	"pixstall-user/app/auth/delivery/http"
-	grpc2 "pixstall-user/app/auth/repository/grpc"
+	grpc2 "pixstall-user/app/auth/repo/grpc"
 	"pixstall-user/app/auth/usecase"
 	http2 "pixstall-user/app/reg/delivery/http"
 	usecase2 "pixstall-user/app/reg/usecase"
 	"pixstall-user/app/token/repo/jwt"
 	http3 "pixstall-user/app/user/delivery/http"
-	mongo2 "pixstall-user/app/user/repository/mongo"
+	"pixstall-user/app/user/msg-broker/rabbitmq"
+	mongo2 "pixstall-user/app/user/repo/mongo"
 	usecase3 "pixstall-user/app/user/usecase"
 )
 
@@ -30,9 +32,10 @@ func InitAuthController(grpcConn *grpc.ClientConn, db *mongo.Database) http.Auth
 	return authController
 }
 
-func InitRegController(grpcConn *grpc.ClientConn, db *mongo.Database) http2.RegController {
+func InitRegController(grpcConn *grpc.ClientConn, db *mongo.Database, ch *amqp.Channel) http2.RegController {
 	repo := mongo2.NewMongoUserRepo(db)
-	useCase := usecase2.NewRegUseCase(repo)
+	artistRepo := rabbitmq.NewRabbitMQArtistRepo(ch)
+	useCase := usecase2.NewRegUseCase(repo, artistRepo)
 	regController := http2.NewRegController(useCase)
 	return regController
 }

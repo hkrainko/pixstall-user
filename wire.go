@@ -4,17 +4,19 @@ package main
 
 import (
 	"github.com/google/wire"
+	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc"
-	token_repo "pixstall-user/app/token/repo/jwt"
 	auth_deliv "pixstall-user/app/auth/delivery/http"
-	auth_repo "pixstall-user/app/auth/repository/grpc"
+	auth_repo "pixstall-user/app/auth/repo/grpc"
 	auth_ucase "pixstall-user/app/auth/usecase"
 	reg_deliv "pixstall-user/app/reg/delivery/http"
 	reg_ucase "pixstall-user/app/reg/usecase"
+	token_repo "pixstall-user/app/token/repo/jwt"
 	user_deliv "pixstall-user/app/user/delivery/http"
+	artist_repo "pixstall-user/app/user/msg-broker/rabbitmq"
+	user_repo "pixstall-user/app/user/repo/mongo"
 	user_ucase "pixstall-user/app/user/usecase"
-	user_repo "pixstall-user/app/user/repository/mongo"
 )
 
 func InitAuthController(grpcConn *grpc.ClientConn, db *mongo.Database) auth_deliv.AuthController {
@@ -28,11 +30,12 @@ func InitAuthController(grpcConn *grpc.ClientConn, db *mongo.Database) auth_deli
 	return auth_deliv.AuthController{}
 }
 
-func InitRegController(grpcConn *grpc.ClientConn, db *mongo.Database) reg_deliv.RegController {
+func InitRegController(grpcConn *grpc.ClientConn, db *mongo.Database, ch *amqp.Channel) reg_deliv.RegController {
 	wire.Build(
 		reg_deliv.NewRegController,
 		user_repo.NewMongoUserRepo,
 		reg_ucase.NewRegUseCase,
+		artist_repo.NewRabbitMQArtistRepo,
 	)
 	return reg_deliv.RegController{}
 }

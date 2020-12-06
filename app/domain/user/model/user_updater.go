@@ -1,5 +1,7 @@
 package model
 
+import "pixstall-user/app/domain/artist/model"
+
 type UserUpdater struct {
 	UserID     string
 	UserName   string
@@ -9,5 +11,5 @@ type UserUpdater struct {
 	PhotoURL   string
 	State      UserState
 	IsArtist   *bool
-	ArtistInfo *ArtistInfo
+	ArtistInfo *model.ArtistIntro
 }

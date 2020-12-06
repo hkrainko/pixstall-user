@@ -2,6 +2,7 @@ package model
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	model2 "pixstall-user/app/domain/artist/model"
 	authModel "pixstall-user/app/domain/auth/model"
 	"pixstall-user/app/domain/user/model"
 )
@@ -18,7 +19,7 @@ type User struct {
 	Gender     string             `bson:"gender,omitempty"`
 	PhotoURL   string             `bson:"photoUrl,omitempty"`
 	IsArtist   bool               `bson:"isArtist"`
-	ArtistInfo model.ArtistInfo   `bson:"artistInfo,omitempty"`
+	ArtistInfo model2.ArtistIntro `bson:"artistInfo,omitempty"`
 	State      model.UserState    `bson:"state,omitempty"`
 }
 

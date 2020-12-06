@@ -2,9 +2,9 @@ package http
 
 import (
 	"github.com/gin-gonic/gin"
+	model2 "pixstall-user/app/domain/artist/model"
 	"pixstall-user/app/domain/reg"
 	"pixstall-user/app/domain/reg/model"
-	userModel "pixstall-user/app/domain/user/model"
 )
 
 type RegController struct {
@@ -31,7 +31,7 @@ func (r RegController) Registration(c *gin.Context) {
 		Birthday:      "",
 		Gender:        "",
 		RegAsArtist:   false,
-		RegArtistInfo: userModel.ArtistInfo{},
+		RegArtistInfo: model2.ArtistIntro{},
 	}
 	err := r.regUseCase.Registration(c, &regInfo)
 

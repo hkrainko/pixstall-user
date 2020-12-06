@@ -9,9 +9,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"os"
+	model2 "pixstall-user/app/domain/artist/model"
 	"pixstall-user/app/domain/user"
 	"pixstall-user/app/domain/user/model"
-	mongoModel "pixstall-user/app/user/repository/mongo/model"
+	mongoModel "pixstall-user/app/user/repo/mongo/model"
 	"testing"
 )
 
@@ -138,7 +139,7 @@ func TestMongoUserRepo_UpdateUserByAuthID_BeArtist(t *testing.T) {
 		UserName: "new_UserName",
 		State:    model.UserStateActive,
 		IsArtist: &isArtist,
-		ArtistInfo: &model.ArtistInfo{
+		ArtistInfo: &model2.ArtistIntro{
 			YearOfDrawing: &yearOfDrawing,
 			ArtTypes:      &[]string{"A", "B", "C", "D", "E"},
 			SelfIntro:     &SelfIntro,

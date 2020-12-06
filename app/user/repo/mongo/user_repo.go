@@ -9,7 +9,7 @@ import (
 	authModel "pixstall-user/app/domain/auth/model"
 	"pixstall-user/app/domain/user"
 	userModel "pixstall-user/app/domain/user/model"
-	mongoModel "pixstall-user/app/user/repository/mongo/model"
+	mongoModel "pixstall-user/app/user/repo/mongo/model"
 )
 
 type mongoUserRepo struct {
