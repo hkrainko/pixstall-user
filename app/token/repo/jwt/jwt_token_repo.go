@@ -3,7 +3,7 @@ package jwt
 import (
 	"context"
 	"github.com/dgrijalva/jwt-go"
-	"pixstall-user/app/domain/token"
+	"pixstall-user/domain/token"
 	"time"
 )
 

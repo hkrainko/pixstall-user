@@ -1,6 +1,6 @@
 package http
 
-import "pixstall-user/app/domain/user"
+import "pixstall-user/domain/user"
 
 type UserController struct {
 	userUseCase user.UseCase

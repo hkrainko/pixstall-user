@@ -1,6 +1,6 @@
 package model
 
-import "pixstall-user/app/domain/artist/model"
+import "pixstall-user/domain/artist/model"
 
 type UserUpdater struct {
 	UserID     string

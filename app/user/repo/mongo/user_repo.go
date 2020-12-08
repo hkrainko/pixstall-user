@@ -6,10 +6,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	authModel "pixstall-user/app/domain/auth/model"
-	"pixstall-user/app/domain/user"
-	userModel "pixstall-user/app/domain/user/model"
 	mongoModel "pixstall-user/app/user/repo/mongo/model"
+	authModel "pixstall-user/domain/auth/model"
+	"pixstall-user/domain/user"
+	userModel "pixstall-user/domain/user/model"
 )
 
 type mongoUserRepo struct {

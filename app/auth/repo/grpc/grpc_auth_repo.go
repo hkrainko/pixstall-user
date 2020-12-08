@@ -4,8 +4,8 @@ import (
 	"context"
 	"google.golang.org/grpc"
 	"log"
-	"pixstall-user/app/domain/auth"
-	authModel "pixstall-user/app/domain/auth/model"
+	"pixstall-user/domain/auth"
+	authModel "pixstall-user/domain/auth/model"
 	pb "pixstall-user/proto"
 )
 

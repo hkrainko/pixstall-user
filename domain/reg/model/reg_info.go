@@ -1,7 +1,7 @@
 package model
 
 import (
-	model2 "pixstall-user/app/domain/artist/model"
+	model2 "pixstall-user/domain/artist/model"
 )
 
 type RegInfo struct {

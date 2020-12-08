@@ -2,8 +2,8 @@ package user
 
 import (
 	"context"
-	authModel "pixstall-user/app/domain/auth/model"
-	userModel "pixstall-user/app/domain/user/model"
+	authModel "pixstall-user/domain/auth/model"
+	userModel "pixstall-user/domain/user/model"
 )
 
 type Repo interface {

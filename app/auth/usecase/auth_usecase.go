@@ -2,16 +2,16 @@ package usecase
 
 import (
 	"context"
-	"pixstall-user/app/domain/auth"
-	authModel "pixstall-user/app/domain/auth/model"
-	"pixstall-user/app/domain/token"
-	"pixstall-user/app/domain/user"
-	"pixstall-user/app/domain/user/model"
+	"pixstall-user/domain/auth"
+	authModel "pixstall-user/domain/auth/model"
+	"pixstall-user/domain/token"
+	"pixstall-user/domain/user"
+	"pixstall-user/domain/user/model"
 )
 
 type authUseCase struct {
-	authRepo auth.Repo
-	userRepo user.Repo
+	authRepo  auth.Repo
+	userRepo  user.Repo
 	tokenRepo token.Repo
 }
 

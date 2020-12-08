@@ -2,9 +2,9 @@ package http
 
 import (
 	"github.com/gin-gonic/gin"
-	model2 "pixstall-user/app/domain/artist/model"
-	"pixstall-user/app/domain/reg"
-	"pixstall-user/app/domain/reg/model"
+	model2 "pixstall-user/domain/artist/model"
+	"pixstall-user/domain/reg"
+	"pixstall-user/domain/reg/model"
 )
 
 type RegController struct {

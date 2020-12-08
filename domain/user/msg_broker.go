@@ -2,8 +2,8 @@ package user
 
 import (
 	"context"
-	domainRegModel "pixstall-user/app/domain/reg/model"
-	domainUserModel "pixstall-user/app/domain/user/model"
+	domainRegModel "pixstall-user/domain/reg/model"
+	domainUserModel "pixstall-user/domain/user/model"
 )
 
 type MsgBroker interface {

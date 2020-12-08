@@ -1,6 +1,6 @@
 package model
 
-import "pixstall-user/app/domain/user/model"
+import "pixstall-user/domain/user/model"
 
 type HandledAuthCallback struct {
 	Token string

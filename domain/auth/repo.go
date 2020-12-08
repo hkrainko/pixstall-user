@@ -2,7 +2,7 @@ package auth
 
 import (
 	"context"
-	authModel "pixstall-user/app/domain/auth/model"
+	authModel "pixstall-user/domain/auth/model"
 )
 
 type Repo interface {

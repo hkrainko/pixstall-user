@@ -1,6 +1,6 @@
 package model
 
-import domainUserModel "pixstall-user/app/domain/user/model"
+import domainUserModel "pixstall-user/domain/user/model"
 
 type UserUpdater struct {
 	*domainUserModel.UserUpdater

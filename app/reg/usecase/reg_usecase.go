@@ -3,10 +3,10 @@ package usecase
 import (
 	"context"
 	"log"
-	"pixstall-user/app/domain/reg"
-	"pixstall-user/app/domain/reg/model"
-	"pixstall-user/app/domain/user"
-	userModel "pixstall-user/app/domain/user/model"
+	"pixstall-user/domain/reg"
+	"pixstall-user/domain/reg/model"
+	"pixstall-user/domain/user"
+	userModel "pixstall-user/domain/user/model"
 )
 
 type regUseCase struct {

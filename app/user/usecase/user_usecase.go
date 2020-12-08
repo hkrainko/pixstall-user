@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"pixstall-user/app/domain/user"
+	"pixstall-user/domain/user"
 )
 
 type userUseCase struct {

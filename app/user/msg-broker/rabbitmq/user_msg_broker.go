@@ -4,10 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/streadway/amqp"
-	"pixstall-user/app/domain/reg/model"
-	"pixstall-user/app/domain/user"
-	domainUserModel "pixstall-user/app/domain/user/model"
 	msgBrokerModel "pixstall-user/app/user/msg-broker/model"
+	"pixstall-user/domain/reg/model"
+	"pixstall-user/domain/user"
+	domainUserModel "pixstall-user/domain/user/model"
 )
 
 type rabbitMQUserMsgBroker struct {

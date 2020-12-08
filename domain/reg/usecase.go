@@ -2,7 +2,7 @@ package reg
 
 import (
 	"context"
-	"pixstall-user/app/domain/reg/model"
+	"pixstall-user/domain/reg/model"
 )
 
 type UseCase interface {

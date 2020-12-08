@@ -9,10 +9,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"os"
-	model2 "pixstall-user/app/domain/artist/model"
-	"pixstall-user/app/domain/user"
-	"pixstall-user/app/domain/user/model"
 	mongoModel "pixstall-user/app/user/repo/mongo/model"
+	model2 "pixstall-user/domain/artist/model"
+	"pixstall-user/domain/user"
+	"pixstall-user/domain/user/model"
 	"testing"
 )
 

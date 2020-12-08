@@ -2,9 +2,9 @@ package model
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	model2 "pixstall-user/app/domain/artist/model"
-	authModel "pixstall-user/app/domain/auth/model"
-	"pixstall-user/app/domain/user/model"
+	model2 "pixstall-user/domain/artist/model"
+	authModel "pixstall-user/domain/auth/model"
+	"pixstall-user/domain/user/model"
 )
 
 type User struct {
