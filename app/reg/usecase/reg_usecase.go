@@ -28,10 +28,9 @@ func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo) error
 		Email:      info.Email,
 		Birthday:   info.Birthday,
 		Gender:     info.Gender,
-		PhotoURL:   "",
+		ProfilePath:   "",
 		State:      "A",
 		IsArtist:   &info.RegAsArtist,
-		ArtistInfo: &info.RegArtistInfo,
 	}
 
 	err := r.userRepo.UpdateUserByAuthID(ctx, info.AuthID, &updater)

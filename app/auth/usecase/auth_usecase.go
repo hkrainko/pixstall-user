@@ -50,6 +50,7 @@ func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authMo
 				return &authModel.HandledAuthCallback{
 					Token: authToken,
 					User:  *user,
+					PhotoUrl: authUserInfo.PhotoURL,
 				}, nil
 			default:
 				return nil, err
@@ -72,6 +73,7 @@ func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authMo
 	return &authModel.HandledAuthCallback{
 		Token: authToken,
 		User:  *user,
+		PhotoUrl: authUserInfo.PhotoURL,
 	}, nil
 }
 

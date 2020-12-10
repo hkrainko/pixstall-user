@@ -2,7 +2,6 @@ package model
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	model2 "pixstall-user/domain/artist/model"
 	authModel "pixstall-user/domain/auth/model"
 	"pixstall-user/domain/user/model"
 )
@@ -17,9 +16,8 @@ type User struct {
 	Email      string             `bson:"email,omitempty"`
 	Birthday   string             `bson:"birthday,omitempty"`
 	Gender     string             `bson:"gender,omitempty"`
-	PhotoURL   string             `bson:"photoUrl,omitempty"`
+	ProfilePath   string             `bson:"photoUrl,omitempty"`
 	IsArtist   bool               `bson:"isArtist"`
-	ArtistInfo model2.ArtistIntro `bson:"artistInfo,omitempty"`
 	State      model.UserState    `bson:"state,omitempty"`
 }
 
@@ -32,9 +30,8 @@ func (u *User) ToDomainUser() *model.User {
 		Email:    u.Email,
 		Birthday: u.Birthday,
 		Gender:   u.Gender,
-		PhotoURL: u.PhotoURL,
+		ProfilePath: u.ProfilePath,
 		IsArtist: u.IsArtist,
-		ArtistInfo: u.ArtistInfo,
 		State:    u.State,
 	}
 }
@@ -47,7 +44,6 @@ func NewFromAuthUserInfo(u *authModel.AuthUserInfo) *User {
 		Email:    u.Email,
 		Birthday: u.Birthday,
 		Gender:   u.Gender,
-		PhotoURL: u.PhotoURL,
 		State:    "P",
 	}
 }

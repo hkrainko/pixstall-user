@@ -10,7 +10,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"os"
 	mongoModel "pixstall-user/app/user/repo/mongo/model"
-	model2 "pixstall-user/domain/artist/model"
 	"pixstall-user/domain/user"
 	"pixstall-user/domain/user/model"
 	"testing"
@@ -61,9 +60,8 @@ func TestMongoUserRepo_UpdateUser(t *testing.T) {
 		Email:      "new_Email",
 		Birthday:   "20201230",
 		Gender:     "F",
-		PhotoURL:   "new_PhotoURL",
+		ProfilePath:   "new_ProfilePath",
 		State:      model.UserStateActive,
-		ArtistInfo: nil,
 	}
 	err := repo.UpdateUser(ctx, "test_user_id", &updater)
 	assert.NoError(t, err)
@@ -76,7 +74,7 @@ func TestMongoUserRepo_UpdateUser(t *testing.T) {
 	assert.Equal(t, "new_Email", mongoUser.Email)
 	assert.Equal(t, "20201230", mongoUser.Birthday)
 	assert.Equal(t, "F", mongoUser.Gender)
-	assert.Equal(t, "new_PhotoURL", mongoUser.PhotoURL)
+	assert.Equal(t, "new_ProfilePath", mongoUser.ProfilePath)
 	assert.Equal(t, model.UserStateActive, mongoUser.State)
 }
 
@@ -86,7 +84,6 @@ func TestMongoUserRepo_UpdateUser_userNameOnly(t *testing.T) {
 	updater := model.UserUpdater{
 		UserName:   "new_UserName",
 		State:      model.UserStateActive,
-		ArtistInfo: nil,
 	}
 	err := repo.UpdateUser(ctx, "test_user_id", &updater)
 	assert.NoError(t, err)
@@ -99,7 +96,7 @@ func TestMongoUserRepo_UpdateUser_userNameOnly(t *testing.T) {
 	assert.Equal(t, "Dummy_Email", mongoUser.Email)
 	assert.Equal(t, "20200101", mongoUser.Birthday)
 	assert.Equal(t, "M", mongoUser.Gender)
-	assert.Equal(t, "Dummy_PhotoURL", mongoUser.PhotoURL)
+	assert.Equal(t, "Dummy_ProfilePath", mongoUser.ProfilePath)
 	assert.Equal(t, model.UserStateActive, mongoUser.State)
 }
 
@@ -110,7 +107,6 @@ func TestMongoUserRepo_UpdateUserByAuthID_userNameOnly(t *testing.T) {
 		UserID:     "new_UserID",
 		UserName:   "new_UserName",
 		State:      model.UserStateActive,
-		ArtistInfo: nil,
 	}
 	err := repo.UpdateUserByAuthID(ctx, "Dummy_AuthID", &updater)
 	assert.NoError(t, err)
@@ -124,7 +120,7 @@ func TestMongoUserRepo_UpdateUserByAuthID_userNameOnly(t *testing.T) {
 	assert.Equal(t, "Dummy_Email", mongoUser.Email)
 	assert.Equal(t, "20200101", mongoUser.Birthday)
 	assert.Equal(t, "M", mongoUser.Gender)
-	assert.Equal(t, "Dummy_PhotoURL", mongoUser.PhotoURL)
+	assert.Equal(t, "Dummy_ProfilePath", mongoUser.ProfilePath)
 	assert.Equal(t, model.UserStateActive, mongoUser.State)
 }
 
@@ -132,18 +128,11 @@ func TestMongoUserRepo_UpdateUserByAuthID_BeArtist(t *testing.T) {
 	cleanAll()
 	objectID := insertDummyUser(ctx, "Dummy_AuthID", model.UserStatePending)
 	isArtist := true
-	yearOfDrawing := 5
-	SelfIntro := "Hello"
 	updater := model.UserUpdater{
 		UserID:   "new_UserID",
 		UserName: "new_UserName",
 		State:    model.UserStateActive,
 		IsArtist: &isArtist,
-		ArtistInfo: &model2.ArtistIntro{
-			YearOfDrawing: &yearOfDrawing,
-			ArtTypes:      &[]string{"A", "B", "C", "D", "E"},
-			SelfIntro:     &SelfIntro,
-		},
 	}
 	err := repo.UpdateUserByAuthID(ctx, "Dummy_AuthID", &updater)
 	assert.NoError(t, err)
@@ -157,12 +146,8 @@ func TestMongoUserRepo_UpdateUserByAuthID_BeArtist(t *testing.T) {
 	assert.Equal(t, "Dummy_Email", mongoUser.Email)
 	assert.Equal(t, "20200101", mongoUser.Birthday)
 	assert.Equal(t, "M", mongoUser.Gender)
-	assert.Equal(t, "Dummy_PhotoURL", mongoUser.PhotoURL)
+	assert.Equal(t, "Dummy_ProfilePath", mongoUser.ProfilePath)
 	assert.True(t, mongoUser.IsArtist)
-	assert.NotNil(t, mongoUser.ArtistInfo)
-	assert.Equal(t, 5, *mongoUser.ArtistInfo.YearOfDrawing)
-	assert.Equal(t, 5, len(*mongoUser.ArtistInfo.ArtTypes))
-	assert.Equal(t, "Hello", *mongoUser.ArtistInfo.SelfIntro)
 	assert.Equal(t, model.UserStateActive, mongoUser.State)
 }
 
@@ -193,7 +178,7 @@ func insertDummyUser(ctx context.Context, userId string, state model.UserState) 
 		Email:    "Dummy_Email",
 		Birthday: "20200101",
 		Gender:   "M",
-		PhotoURL: "Dummy_PhotoURL",
+		ProfilePath: "Dummy_ProfilePath",
 		State:    state,
 	}
 	result, err := c.InsertOne(ctx, &user)

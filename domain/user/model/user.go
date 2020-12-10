@@ -1,7 +1,5 @@
 package model
 
-import "pixstall-user/domain/artist/model"
-
 type User struct {
 	UserID     string
 	AuthID     string
@@ -10,9 +8,8 @@ type User struct {
 	Email      string
 	Birthday   string
 	Gender     string
-	PhotoURL   string
+	ProfilePath   string
 	IsArtist   bool
-	ArtistInfo model.ArtistIntro
 	State      UserState
 }
 

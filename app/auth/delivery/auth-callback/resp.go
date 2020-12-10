@@ -5,15 +5,15 @@ import (
 )
 
 type Response struct {
-	AuthID   string `json:"authId"`
-	UserName string `json:"userName"`
-	AuthType string `json:"authType"`
-	Token    string `json:"token"`
-	Email    string `json:"email"`
-	Birthday string `json:"birthday"`
-	Gender   string `json:"gender"`
-	PhotoURL string `json:"picture"`
-	State    string `json:"state"`
+	AuthID     string `json:"authId"`
+	UserName   string `json:"userName"`
+	AuthType   string `json:"authType"`
+	Token      string `json:"token"`
+	Email      string `json:"email"`
+	Birthday   string `json:"birthday"`
+	Gender     string `json:"gender"`
+	PhotoURL   string `json:"photoUrl"`
+	State      string `json:"state"`
 }
 
 func NewResponse(cb *authModel.HandledAuthCallback) *Response {
@@ -25,7 +25,7 @@ func NewResponse(cb *authModel.HandledAuthCallback) *Response {
 		Email:    cb.Email,
 		Birthday: cb.Birthday,
 		Gender:   cb.Gender,
-		PhotoURL: cb.PhotoURL,
+		PhotoURL: cb.PhotoUrl,
 		State:    string(cb.State),
 	}
 }

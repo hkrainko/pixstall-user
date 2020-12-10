@@ -42,7 +42,6 @@ func (m mongoUserRepo) SaveAuthUser(ctx context.Context, authUserInfo *authModel
 		Email:    authUserInfo.Email,
 		Birthday: authUserInfo.Birthday,
 		Gender:   authUserInfo.Gender,
-		PhotoURL: authUserInfo.PhotoURL,
 		State:    "P",
 	}, nil
 
@@ -66,25 +65,14 @@ func (m mongoUserRepo) UpdateUser(ctx context.Context, userID string, updater *u
 	if updater.Gender != "" {
 		update["gender"] = updater.Gender
 	}
-	if updater.PhotoURL != "" {
-		update["photoUrl"] = updater.PhotoURL
+	if updater.ProfilePath != "" {
+		update["profilePath"] = updater.ProfilePath
 	}
 	if updater.State != "" {
 		update["state"] = updater.State
 	}
 	if updater.IsArtist != nil {
 		update["isArtist"] = updater.IsArtist
-	}
-	if updater.IsArtist != nil && *updater.IsArtist && updater.ArtistInfo != nil {
-		if updater.ArtistInfo.YearOfDrawing != nil {
-			update["artistInfo.yearOfDrawing"] = updater.ArtistInfo.YearOfDrawing
-		}
-		if updater.ArtistInfo.ArtTypes != nil {
-			update["artistInfo.artTypes"] = updater.ArtistInfo.ArtTypes
-		}
-		if updater.ArtistInfo.SelfIntro != nil {
-			update["artistInfo.selfIntro"] = updater.ArtistInfo.SelfIntro
-		}
 	}
 
 	result, err := collection.UpdateOne(ctx, filter, bson.M{"$set": update})
@@ -119,25 +107,14 @@ func (m mongoUserRepo) UpdateUserByAuthID(ctx context.Context, authID string, up
 	if updater.Gender != "" {
 		update["gender"] = updater.Gender
 	}
-	if updater.PhotoURL != "" {
-		update["photoUrl"] = updater.PhotoURL
+	if updater.ProfilePath != "" {
+		update["photoUrl"] = updater.ProfilePath
 	}
 	if updater.State != "" {
 		update["state"] = updater.State
 	}
 	if updater.IsArtist != nil {
 		update["isArtist"] = updater.IsArtist
-	}
-	if updater.IsArtist != nil && *updater.IsArtist && updater.ArtistInfo != nil {
-		if updater.ArtistInfo.YearOfDrawing != nil {
-			update["artistInfo.yearOfDrawing"] = updater.ArtistInfo.YearOfDrawing
-		}
-		if updater.ArtistInfo.ArtTypes != nil {
-			update["artistInfo.artTypes"] = updater.ArtistInfo.ArtTypes
-		}
-		if updater.ArtistInfo.SelfIntro != nil {
-			update["artistInfo.selfIntro"] = updater.ArtistInfo.SelfIntro
-		}
 	}
 
 	result, err := collection.UpdateOne(ctx, filter, bson.M{"$set": update})
