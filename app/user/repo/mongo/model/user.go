@@ -44,6 +44,6 @@ func NewFromAuthUserInfo(u *authModel.AuthUserInfo) *User {
 		Email:    u.Email,
 		Birthday: u.Birthday,
 		Gender:   u.Gender,
-		State:    "P",
+		State:    model.UserStatePending,
 	}
 }

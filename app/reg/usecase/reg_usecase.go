@@ -30,7 +30,14 @@ func NewRegUseCase(userRepo user.Repo, userMsgBroker user.MsgBroker, imageRepo d
 
 func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo, pngImage image.Image) error {
 
-	//Check if user exist
+	//Check if userId exist
+	exist, err := r.userRepo.IsUserExist(ctx, info.UserID)
+	if err != nil {
+		return err
+	}
+	if *exist {
+		return userModel.UserErrorDuplicateUser
+	}
 
 	//Upload image
 	profilePath := func() string {
@@ -66,11 +73,11 @@ func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo, pngIm
 		Birthday:    info.Birthday,
 		Gender:      info.Gender,
 		ProfilePath: profilePath,
-		State:       "A",
+		State:       userModel.UserStateActive,
 		IsArtist:    &info.RegAsArtist,
 	}
 
-	err := r.userRepo.UpdateUserByAuthID(ctx, info.AuthID, &updater)
+	err = r.userRepo.UpdateUserByAuthID(ctx, info.AuthID, &updater)
 	if err != nil {
 		return err
 	}

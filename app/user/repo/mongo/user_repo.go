@@ -42,7 +42,7 @@ func (m mongoUserRepo) SaveAuthUser(ctx context.Context, authUserInfo *authModel
 		Email:    authUserInfo.Email,
 		Birthday: authUserInfo.Birthday,
 		Gender:   authUserInfo.Gender,
-		State:    "P",
+		State:    userModel.UserStatePending,
 	}, nil
 
 }
@@ -144,7 +144,7 @@ func (m mongoUserRepo) GetUserByAuthID(ctx context.Context, authID string) (*use
 
 func (m mongoUserRepo) GetUser(ctx context.Context, userID string) (*userModel.User, error) {
 	collection := m.db.Collection(UserCollection)
-	filter := bson.M{"_id": userID}
+	filter := bson.M{"userId": userID}
 	mongoUser := mongoModel.User{}
 	err := collection.FindOne(ctx, filter).Decode(&mongoUser)
 	if err != nil {
@@ -156,4 +156,23 @@ func (m mongoUserRepo) GetUser(ctx context.Context, userID string) (*userModel.U
 		}
 	}
 	return mongoUser.ToDomainUser(), nil
+}
+
+func (m mongoUserRepo) IsUserExist(ctx context.Context, userID string) (*bool, error) {
+	var exist bool
+	collection := m.db.Collection(UserCollection)
+	filter := bson.M{"userId": userID}
+	mongoUser := mongoModel.User{}
+	err := collection.FindOne(ctx, filter).Decode(&mongoUser)
+	if err != nil {
+		switch err {
+		case mongo.ErrNoDocuments:
+			exist = false
+			return &exist, userModel.UserErrorNotFound
+		default:
+			return nil, userModel.UserErrorUnknown
+		}
+	}
+	exist = true
+	return &exist, nil
 }
