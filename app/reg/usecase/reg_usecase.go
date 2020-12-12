@@ -37,11 +37,6 @@ func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo, pngIm
 		if pngImage == nil {
 			return ""
 		}
-		//pngImage, err := png.Decode(bytes.NewReader(*profileData))
-		//if err != nil {
-		//	log.Println(err)
-		//	return ""
-		//}
 		newUUID, err := uuid.NewRandom()
 		if err != nil {
 			log.Println(err)
