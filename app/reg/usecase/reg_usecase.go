@@ -28,7 +28,7 @@ func NewRegUseCase(userRepo user.Repo, userMsgBroker user.MsgBroker, imageRepo d
 	}
 }
 
-func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo, pngImage *image.Image) error {
+func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo, pngImage image.Image) error {
 
 	//Check if user exist
 
@@ -52,12 +52,12 @@ func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo, pngIm
 		fileName = info.UserID + "_" + fileName
 		//TODO: put profile path into other place
 		path := "profile/"
-		err = r.imageRepo.SaveImage(ctx, path, fileName + "_50", utils.ResizeImage(*pngImage, 50, 50))
+		err = r.imageRepo.SaveImage(ctx, path, fileName + "_50", utils.ResizeImage(pngImage, 50, 50))
 		if err != nil {
 			log.Println(err)
 			return ""
 		}
-		err = r.imageRepo.SaveImage(ctx, path, fileName, utils.ResizeImage(*pngImage, 180, 180))
+		err = r.imageRepo.SaveImage(ctx, path, fileName, utils.ResizeImage(pngImage, 180, 180))
 		if err != nil {
 			return ""
 		}

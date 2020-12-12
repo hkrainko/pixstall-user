@@ -61,7 +61,7 @@ func (r RegController) Registration(c *gin.Context) {
 		}(),
 		RegArtistInfo: model2.ArtistIntro{},
 	}
-	err = r.regUseCase.Registration(c, &regInfo, &pngImage)
+	err = r.regUseCase.Registration(c, &regInfo, pngImage)
 	if err != nil {
 		return
 	}
