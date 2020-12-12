@@ -30,6 +30,15 @@ func NewRegUseCase(userRepo user.Repo, userMsgBroker user.MsgBroker, imageRepo d
 
 func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo, pngImage image.Image) error {
 
+	//Check if authUser exist and in pending state
+	extUser, err := r.userRepo.GetUserByAuthID(ctx, info.AuthID)
+	if err != nil {
+		return err
+	}
+	if extUser.State != userModel.UserStatePending {
+		return userModel.UserErrorAuthIDAlreadyRegister
+	}
+
 	//Check if userId exist
 	exist, err := r.userRepo.IsUserExist(ctx, info.UserID)
 	if err != nil {

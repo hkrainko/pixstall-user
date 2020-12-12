@@ -9,8 +9,9 @@ func (e UserError) Error() string {
 }
 
 const (
-	UserErrorNotFound      UserError = 0
-	UserErrorTerminated    UserError = 1
-	UserErrorDuplicateUser UserError = 2
-	UserErrorUnknown       UserError = 99
+	UserErrorNotFound              UserError = 10
+	UserErrorTerminated            UserError = 11
+	UserErrorDuplicateUser         UserError = 12
+	UserErrorAuthIDAlreadyRegister UserError = 13
+	UserErrorUnknown               UserError = 99
 )

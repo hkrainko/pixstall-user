@@ -1,6 +1,7 @@
 package http
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	authCallback "pixstall-user/app/auth/delivery/auth-callback"
 	getAuthURL "pixstall-user/app/auth/delivery/get-auth-url"
@@ -22,10 +23,12 @@ func NewAuthController(useCase auth.UseCase) AuthController {
 func (a AuthController) GetAuthURL(c *gin.Context) {
 	authType := c.PostForm("auth_type")
 	if authType == "" {
+		c.JSON(200, getAuthURL.NewErrorResponse(errors.New("argument")))
 		return
 	}
 	url, err := a.authUseCase.GetAuthURL(c, authType)
 	if err != nil {
+		c.JSON(200, getAuthURL.NewErrorResponse(err))
 		return
 	}
 	c.JSON(200, getAuthURL.NewResponse(url))
