@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/gin-gonic/gin"
 	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -12,8 +15,18 @@ import (
 )
 
 func main() {
-	//MongoDB
+
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	//AWS s3
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		Config:                  aws.Config{},
+		Profile:                 "", //[default], use [prod], [uat]
+		SharedConfigState:       session.SharedConfigEnable,
+	}))
+	awsS3 := s3.New(sess)
+
+	//MongoDB
 	dbClient, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		panic(err)
@@ -66,7 +79,7 @@ func main() {
 
 	regGroup := r.Group("/reg")
 	{
-		ctr := InitRegController(grpcConn, dbClient.Database("pixstall-user"), ch)
+		ctr := InitRegController(grpcConn, dbClient.Database("pixstall-user"), ch, awsS3)
 		regGroup.POST("/register", ctr.Registration)
 	}
 

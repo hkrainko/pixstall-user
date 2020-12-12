@@ -3,6 +3,7 @@
 package main
 
 import (
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/google/wire"
 	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -10,6 +11,7 @@ import (
 	auth_deliv "pixstall-user/app/auth/delivery/http"
 	auth_repo "pixstall-user/app/auth/repo/grpc"
 	auth_ucase "pixstall-user/app/auth/usecase"
+	image_repo "pixstall-user/app/image/aws-s3"
 	reg_deliv "pixstall-user/app/reg/delivery/http"
 	reg_ucase "pixstall-user/app/reg/usecase"
 	token_repo "pixstall-user/app/token/repo/jwt"
@@ -26,25 +28,27 @@ func InitAuthController(grpcConn *grpc.ClientConn, db *mongo.Database) auth_deli
 		auth_repo.NewGRPCAuthRepository,
 		user_repo.NewMongoUserRepo,
 		token_repo.NewJWTTokenRepo,
-		)
+	)
 	return auth_deliv.AuthController{}
 }
 
-func InitRegController(grpcConn *grpc.ClientConn, db *mongo.Database, ch *amqp.Channel) reg_deliv.RegController {
+func InitRegController(grpcConn *grpc.ClientConn, db *mongo.Database, ch *amqp.Channel, awsS3 *s3.S3) reg_deliv.RegController {
 	wire.Build(
 		reg_deliv.NewRegController,
 		user_repo.NewMongoUserRepo,
 		reg_ucase.NewRegUseCase,
 		user_msg_broker.NewRabbitMQUserMsgBroker,
+		image_repo.NewAWSS3ImageRepository,
 	)
 	return reg_deliv.RegController{}
 }
 
-func InitUserController(grpcConn *grpc.ClientConn, db *mongo.Database) user_deliv.UserController {
+func InitUserController(grpcConn *grpc.ClientConn, db *mongo.Database, awsS3 *s3.S3) user_deliv.UserController {
 	wire.Build(
 		user_deliv.NewUserController,
 		user_ucase.NewUserUseCase,
 		user_repo.NewMongoUserRepo,
+		image_repo.NewAWSS3ImageRepository,
 	)
 	return user_deliv.UserController{}
 }

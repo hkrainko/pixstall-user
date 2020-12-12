@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"log"
+	"pixstall-user/domain/image"
 	"pixstall-user/domain/reg"
 	"pixstall-user/domain/reg/model"
 	"pixstall-user/domain/user"
@@ -12,12 +13,14 @@ import (
 type regUseCase struct {
 	userRepo      user.Repo
 	userMsgBroker user.MsgBroker
+	imageRepo image.Repo
 }
 
-func NewRegUseCase(userRepo user.Repo, userMsgBroker user.MsgBroker) reg.UseCase {
+func NewRegUseCase(userRepo user.Repo, userMsgBroker user.MsgBroker, imageRepo image.Repo) reg.UseCase {
 	return &regUseCase{
 		userRepo:      userRepo,
 		userMsgBroker: userMsgBroker,
+		imageRepo: imageRepo,
 	}
 }
 

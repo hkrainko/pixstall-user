@@ -6,12 +6,14 @@
 package main
 
 import (
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc"
 	"pixstall-user/app/auth/delivery/http"
 	grpc2 "pixstall-user/app/auth/repo/grpc"
 	"pixstall-user/app/auth/usecase"
+	"pixstall-user/app/image/aws-s3"
 	http2 "pixstall-user/app/reg/delivery/http"
 	usecase2 "pixstall-user/app/reg/usecase"
 	"pixstall-user/app/token/repo/jwt"
@@ -32,17 +34,19 @@ func InitAuthController(grpcConn *grpc.ClientConn, db *mongo.Database) http.Auth
 	return authController
 }
 
-func InitRegController(grpcConn *grpc.ClientConn, db *mongo.Database, ch *amqp.Channel) http2.RegController {
+func InitRegController(grpcConn *grpc.ClientConn, db *mongo.Database, ch *amqp.Channel, awsS3 *s3.S3) http2.RegController {
 	repo := mongo2.NewMongoUserRepo(db)
 	msgBroker := rabbitmq.NewRabbitMQUserMsgBroker(ch)
-	useCase := usecase2.NewRegUseCase(repo, msgBroker)
+	imageRepo := aws_s3.NewAWSS3ImageRepository(awsS3)
+	useCase := usecase2.NewRegUseCase(repo, msgBroker, imageRepo)
 	regController := http2.NewRegController(useCase)
 	return regController
 }
 
-func InitUserController(grpcConn *grpc.ClientConn, db *mongo.Database) http3.UserController {
+func InitUserController(grpcConn *grpc.ClientConn, db *mongo.Database, awsS3 *s3.S3) http3.UserController {
 	repo := mongo2.NewMongoUserRepo(db)
-	useCase := usecase3.NewUserUseCase(repo)
+	imageRepo := aws_s3.NewAWSS3ImageRepository(awsS3)
+	useCase := usecase3.NewUserUseCase(repo, imageRepo)
 	userController := http3.NewUserController(useCase)
 	return userController
 }

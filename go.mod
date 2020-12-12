@@ -3,6 +3,7 @@ module pixstall-user
 go 1.15
 
 require (
+	github.com/aws/aws-sdk-go v1.36.6
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.6.3
 	github.com/golang/protobuf v1.4.1
