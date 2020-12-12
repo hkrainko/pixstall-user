@@ -2,6 +2,8 @@ package http
 
 import (
 	"github.com/gin-gonic/gin"
+	"image"
+	"image/png"
 	model2 "pixstall-user/domain/artist/model"
 	"pixstall-user/domain/reg"
 	"pixstall-user/domain/reg/model"
@@ -25,6 +27,18 @@ func (r RegController) Registration(c *gin.Context) {
 	birthday := c.PostForm("birthday")
 	gender := c.PostForm("gender")
 	regAsArtist := c.PostForm("regAsArtist")
+	profile, err := c.FormFile("profile")
+	pngImage := func() image.Image {
+		f, err := profile.Open()
+		if err != nil {
+			return nil
+		}
+		pngImage, err := png.Decode(f)
+		if err != nil {
+			return nil
+		}
+		return pngImage
+	}()
 
 	if authID == "" {
 		return
@@ -33,17 +47,21 @@ func (r RegController) Registration(c *gin.Context) {
 		return
 	}
 	regInfo := model.RegInfo{
-		AuthID:        authID,
-		UserID:        userID,
-		DisplayName:   displayName,
-		Email:         email,
-		Birthday:      birthday,
-		Gender:        gender,
-		RegAsArtist:   func()bool { if regAsArtist == "Y" {return true}; return false}(),
+		AuthID:      authID,
+		UserID:      userID,
+		DisplayName: displayName,
+		Email:       email,
+		Birthday:    birthday,
+		Gender:      gender,
+		RegAsArtist: func() bool {
+			if regAsArtist == "Y" {
+				return true
+			}
+			return false
+		}(),
 		RegArtistInfo: model2.ArtistIntro{},
 	}
-	err := r.regUseCase.Registration(c, &regInfo)
-
+	err = r.regUseCase.Registration(c, &regInfo, &pngImage)
 	if err != nil {
 		return
 	}

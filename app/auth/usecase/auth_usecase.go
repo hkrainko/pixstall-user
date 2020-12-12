@@ -34,22 +34,22 @@ func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authMo
 	}
 
 	//Get User
-	user, err := a.userRepo.GetUserByAuthID(ctx, authUserInfo.ID)
+	extUser, err := a.userRepo.GetUserByAuthID(ctx, authUserInfo.ID)
 	if err != nil {
 		if userError, isError := err.(model.UserError); isError {
 			switch userError {
 			case model.UserErrorNotFound:
-				user, err := a.createNewUser(ctx, authUserInfo)
+				newUser, err := a.createNewUser(ctx, authUserInfo)
 				if err != nil {
 					return nil, err
 				}
-				authToken, err := a.tokenRepo.GenerateAuthToken(ctx, user.UserID)
+				authToken, err := a.tokenRepo.GenerateAuthToken(ctx, newUser.UserID)
 				if err != nil {
 					return nil, err
 				}
 				return &authModel.HandledAuthCallback{
 					Token: authToken,
-					User:  *user,
+					User:  *newUser,
 					PhotoUrl: authUserInfo.PhotoURL,
 				}, nil
 			default:
@@ -60,19 +60,19 @@ func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authMo
 		}
 	}
 
-	if user.State == model.UserStateTerminated {
+	if extUser.State == model.UserStateTerminated {
 		return nil, model.UserErrorTerminated
 	}
 
 	//Existing User - generate new token
-	authToken, err := a.tokenRepo.GenerateAuthToken(ctx, user.UserID)
+	authToken, err := a.tokenRepo.GenerateAuthToken(ctx, extUser.UserID)
 	if err != nil {
 		return nil, err
 	}
 
 	return &authModel.HandledAuthCallback{
 		Token: authToken,
-		User:  *user,
+		User:  *extUser,
 		PhotoUrl: authUserInfo.PhotoURL,
 	}, nil
 }

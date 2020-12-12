@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/endpoints"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/gin-gonic/gin"
@@ -19,10 +21,18 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 	//AWS s3
+	awsAccessKey := "AKIA5BWICLKRWX6ARSEF"
+	awsSecret := "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"
+	token := ""
+	creds := credentials.NewStaticCredentials(awsAccessKey, awsSecret, token)
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		Config:                  aws.Config{},
-		Profile:                 "", //[default], use [prod], [uat]
-		SharedConfigState:       session.SharedConfigEnable,
+		Config: aws.Config{
+			Region:                        aws.String(endpoints.ApEast1RegionID),
+			CredentialsChainVerboseErrors: aws.Bool(true),
+			Credentials:                   creds,
+		},
+		//Profile:                 "default", //[default], use [prod], [uat]
+		//SharedConfigState:       session.SharedConfigEnable,
 	}))
 	awsS3 := s3.New(sess)
 

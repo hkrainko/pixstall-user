@@ -108,7 +108,7 @@ func (m mongoUserRepo) UpdateUserByAuthID(ctx context.Context, authID string, up
 		update["gender"] = updater.Gender
 	}
 	if updater.ProfilePath != "" {
-		update["photoUrl"] = updater.ProfilePath
+		update["profilePath"] = updater.ProfilePath
 	}
 	if updater.State != "" {
 		update["state"] = updater.State
