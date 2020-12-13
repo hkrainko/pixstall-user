@@ -14,20 +14,20 @@ func NewErrorResponse(err error) interface{} {
 		switch userError {
 		case model.UserErrorDuplicateUser:
 			return utils.NewAPIResponse(int(model.UserErrorDuplicateUser), ErrorResponse{
-				Message: "Unknown Error",
+				Message: userError.Error(),
 			})
 		case model.UserErrorAuthIDAlreadyRegister:
 			return utils.NewAPIResponse(int(model.UserErrorAuthIDAlreadyRegister), ErrorResponse{
-				Message: "Unknown Error",
+				Message: userError.Error(),
 			})
 		default:
 			return utils.NewAPIResponse(99, ErrorResponse{
-				Message: "Unknown Error",
+				Message: err.Error(),
 			})
 		}
 	} else {
 		return utils.NewAPIResponse(99, ErrorResponse{
-			Message: "Unknown Error",
+			Message: err.Error(),
 		})
 	}
 }

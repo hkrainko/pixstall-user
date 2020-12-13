@@ -17,7 +17,6 @@ type mongoUserRepo struct {
 }
 
 const (
-	DBName         = "pixstall-user"
 	UserCollection = "Users"
 )
 
@@ -168,7 +167,7 @@ func (m mongoUserRepo) IsUserExist(ctx context.Context, userID string) (*bool, e
 		switch err {
 		case mongo.ErrNoDocuments:
 			exist = false
-			return &exist, userModel.UserErrorNotFound
+			return &exist, nil
 		default:
 			return nil, userModel.UserErrorUnknown
 		}

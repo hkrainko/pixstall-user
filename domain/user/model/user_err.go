@@ -1,11 +1,11 @@
 package model
 
-import "fmt"
+import "strconv"
 
 type UserError int
 
 func (e UserError) Error() string {
-	return fmt.Sprintf("%v", e)
+	return strconv.Itoa(int(e))
 }
 
 const (
