@@ -5,13 +5,13 @@ import (
 )
 
 type RegInfo struct {
-	AuthID        string             `json:"authId"`
-	UserID        string             `json:"userId"`
-	DisplayName   string             `json:"name"`
-	Email         string             `json:"email"`
-	Birthday      string             `json:"birthday"`
-	Gender        string             `json:"gender"`
-	ProfilePath   string             `json:"profilePath"`
-	RegAsArtist   bool               `json:"regAsArtist"`
-	RegArtistInfo model2.ArtistIntro `json:"regArtistInfo"`
+	AuthID         string             `json:"authId"`
+	UserID         string             `json:"userId"`
+	DisplayName    string             `json:"name"`
+	Email          string             `json:"email"`
+	Birthday       string             `json:"birthday"`
+	Gender         string             `json:"gender"`
+	ProfilePath    string             `json:"profilePath"`
+	RegAsArtist    bool               `json:"regAsArtist"`
+	RegArtistIntro model2.ArtistIntro `json:"regArtistIntro"`
 }
