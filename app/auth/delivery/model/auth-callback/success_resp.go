@@ -4,7 +4,7 @@ import (
 	authModel "pixstall-user/domain/auth/model"
 )
 
-type Response struct {
+type SuccessResponse struct {
 	AuthID     string `json:"authId"`
 	UserName   string `json:"userName"`
 	AuthType   string `json:"authType"`
@@ -16,8 +16,8 @@ type Response struct {
 	State      string `json:"state"`
 }
 
-func NewResponse(cb *authModel.HandledAuthCallback) *Response {
-	return &Response{
+func NewSuccessResponse(cb *authModel.HandledAuthCallback) *SuccessResponse {
+	return &SuccessResponse{
 		AuthID:   cb.AuthID,
 		UserName: cb.UserName,
 		AuthType: cb.AuthType,

@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"image"
 	"image/png"
+	"pixstall-user/app/reg/delivery/model/register"
 	model2 "pixstall-user/domain/artist/model"
 	"pixstall-user/domain/reg"
 	"pixstall-user/domain/reg/model"
@@ -63,6 +64,8 @@ func (r RegController) Registration(c *gin.Context) {
 	}
 	err = r.regUseCase.Registration(c, &regInfo, pngImage)
 	if err != nil {
+		c.JSON(200, register.NewErrorResponse(err))
 		return
 	}
+	c.JSON(200, register.NewSuccessResponse())
 }

@@ -1,4 +1,4 @@
-package get_auth_url
+package auth_callback
 
 import (
 	"pixstall-user/app/utils"
@@ -10,7 +10,6 @@ type ErrorResponse struct {
 }
 
 func NewErrorResponse(err error) interface{} {
-
 	if userError, isError := err.(model.UserError); isError {
 		switch userError {
 		case model.UserErrorDuplicateUser:

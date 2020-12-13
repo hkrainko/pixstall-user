@@ -3,8 +3,8 @@ package http
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
-	authCallback "pixstall-user/app/auth/delivery/auth-callback"
-	getAuthURL "pixstall-user/app/auth/delivery/get-auth-url"
+	authCallback "pixstall-user/app/auth/delivery/model/auth-callback"
+	getAuthURL "pixstall-user/app/auth/delivery/model/get-auth-url"
 	"pixstall-user/domain/auth"
 	authModel "pixstall-user/domain/auth/model"
 )
@@ -17,7 +17,6 @@ func NewAuthController(useCase auth.UseCase) AuthController {
 	return AuthController{
 		authUseCase: useCase,
 	}
-
 }
 
 func (a AuthController) GetAuthURL(c *gin.Context) {
@@ -31,7 +30,7 @@ func (a AuthController) GetAuthURL(c *gin.Context) {
 		c.JSON(200, getAuthURL.NewErrorResponse(err))
 		return
 	}
-	c.JSON(200, getAuthURL.NewResponse(url))
+	c.JSON(200, getAuthURL.NewSuccessResponse(url))
 }
 
 func (a AuthController) AuthCallback(c *gin.Context) {
@@ -47,8 +46,8 @@ func (a AuthController) AuthCallback(c *gin.Context) {
 		Code:     code,
 	})
 	if err != nil {
-		return
+		c.JSON(200, authCallback.NewErrorResponse(err))
 	}
 
-	c.PureJSON(200, authCallback.NewResponse(handledAuthCallback))
+	c.PureJSON(200, authCallback.NewSuccessResponse(handledAuthCallback))
 }
