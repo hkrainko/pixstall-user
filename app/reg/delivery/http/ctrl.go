@@ -30,6 +30,9 @@ func (r RegController) Registration(c *gin.Context) {
 	regAsArtist := c.PostForm("regAsArtist")
 	profile, err := c.FormFile("profile")
 	pngImage := func() image.Image {
+		if err != nil {
+			return nil
+		}
 		f, err := profile.Open()
 		if err != nil {
 			return nil
