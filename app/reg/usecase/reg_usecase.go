@@ -18,13 +18,15 @@ type regUseCase struct {
 	userRepo      user.Repo
 	userMsgBroker user.MsgBroker
 	imageRepo     domainImage.Repo
+	regRepo       reg.Repo
 }
 
-func NewRegUseCase(userRepo user.Repo, userMsgBroker user.MsgBroker, imageRepo domainImage.Repo) reg.UseCase {
+func NewRegUseCase(userRepo user.Repo, userMsgBroker user.MsgBroker, imageRepo domainImage.Repo, regRepo reg.Repo) reg.UseCase {
 	return &regUseCase{
 		userRepo:      userRepo,
 		userMsgBroker: userMsgBroker,
 		imageRepo:     imageRepo,
+		regRepo:       regRepo,
 	}
 }
 
@@ -63,7 +65,7 @@ func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo, pngIm
 		fileName = info.UserID + "_" + fileName
 		//TODO: put profile path into other place
 		path := "profile/"
-		err = r.imageRepo.SaveImage(ctx, path, fileName + "_50", utils.ResizeImage(pngImage, 50, 50))
+		err = r.imageRepo.SaveImage(ctx, path, fileName+"_50", utils.ResizeImage(pngImage, 50, 50))
 		if err != nil {
 			log.Println(err)
 			return ""
