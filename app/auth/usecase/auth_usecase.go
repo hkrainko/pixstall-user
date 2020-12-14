@@ -43,12 +43,12 @@ func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authMo
 				if err != nil {
 					return nil, err
 				}
-				authToken, err := a.tokenRepo.GenerateAuthToken(ctx, newUser.UserID)
+				regToken, err := a.tokenRepo.GenerateRegToken(ctx, newUser.AuthID)
 				if err != nil {
 					return nil, err
 				}
 				return &authModel.HandledAuthCallback{
-					Token: authToken,
+					RegToken: regToken,
 					User:  *newUser,
 					PhotoUrl: authUserInfo.PhotoURL,
 				}, nil
@@ -65,13 +65,13 @@ func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authMo
 	}
 
 	//Existing User - generate new token
-	authToken, err := a.tokenRepo.GenerateAuthToken(ctx, extUser.UserID)
+	apiToken, err := a.tokenRepo.GenerateAPIToken(ctx, extUser.UserID)
 	if err != nil {
 		return nil, err
 	}
 
 	return &authModel.HandledAuthCallback{
-		Token: authToken,
+		APIToken: apiToken,
 		User:  *extUser,
 		PhotoUrl: authUserInfo.PhotoURL,
 	}, nil
