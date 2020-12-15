@@ -5,12 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
-	"log"
 	"net/http"
 	"net/url"
 	"pixstall-user/app/token/repo/kong-jwt/model"
 	"pixstall-user/domain/token"
-	"time"
 )
 
 type RefreshClaims struct {
@@ -34,30 +32,7 @@ func NewKongJWTTokenRepo() token.Repo {
 }
 
 func (k kongJWTTokenRepo) GenerateToken(ctx context.Context, userID string) (string, error) {
-
-
-
-
-}
-
-func (k kongJWTTokenRepo) GenerateRefreshToken(ctx context.Context, userID string) (string, error) {
-	claims := RefreshClaims{
-		UserID: userID,
-		StandardClaims: jwt.StandardClaims{
-			Audience:  userID,
-			ExpiresAt: time.Now().Add(24 * time.Hour).Unix(),
-			Id:        "pixstall-user-refresh-default",
-			IssuedAt:  time.Now().Unix(),
-			Issuer:    "pixstall",
-			Subject:   userID,
-		},
-	}
-	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	jwtToken, err := tokenClaims.SignedString(refreshJWTSecret)
-	if err != nil {
-		return "", err
-	}
-	return jwtToken, nil
+	return "", errors.New("")
 }
 
 func retrieveConsumer(consumerUserName string) (int, error) {
@@ -126,10 +101,7 @@ func createJWTCredentialIfNotExist(consumerUserName string) error {
 
 	//create one the return
 
-
-	data := url.Values{
-		"secret": {"key"},
-	}
+	return nil
 }
 
 
