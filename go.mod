@@ -3,6 +3,7 @@ module pixstall-user
 go 1.15
 
 require (
+	github.com/appleboy/gin-jwt v2.5.0+incompatible // indirect
 	github.com/aws/aws-sdk-go v1.36.6
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/disintegration/imaging v1.6.2
@@ -16,4 +17,5 @@ require (
 	golang.org/x/image v0.0.0-20201208152932-35266b937fa6 // indirect
 	google.golang.org/grpc v1.33.2
 	google.golang.org/protobuf v1.25.0
+	gopkg.in/dgrijalva/jwt-go.v3 v3.2.0 // indirect
 )
