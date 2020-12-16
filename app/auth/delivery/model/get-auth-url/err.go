@@ -1,15 +1,15 @@
 package get_auth_url
 
 import (
-	"pixstall-user/app/utils"
+	"net/http"
 )
 
 type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-func NewErrorResponse(err error) interface{} {
-	return utils.NewAPIResponse(99, ErrorResponse{
+func NewErrorResponse(err error) (int, interface{}) {
+	return http.StatusInternalServerError, ErrorResponse{
 		Message: "Unknown Error",
-	})
+	}
 }
