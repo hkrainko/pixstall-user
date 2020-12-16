@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"log"
 	"os"
 	"pixstall-user/domain/token"
 	"testing"
@@ -30,11 +31,22 @@ func teardown() {
 	fmt.Println("After all tests")
 }
 
-func TestKongJWTTokenRepo_GenerateToken(t *testing.T) {
+func TestKongJWTTokenRepo_GenerateAPIToken(t *testing.T) {
 	dropAll()
-	token, err := repo.GenerateToken(ctx, "tempUserID_")
+	token, err := repo.GenerateAPIToken(ctx, "tempUserID_")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, token)
+
+	log.Println(token)
+}
+
+func TestKongJWTTokenRepo_GenerateRegToken(t *testing.T) {
+	dropAll()
+	token, err := repo.GenerateRegToken(ctx, "authID_")
+	assert.NoError(t, err)
+	assert.NotEmpty(t, token)
+
+	log.Println(token)
 }
 
 func dropAll() {

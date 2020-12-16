@@ -68,7 +68,7 @@ func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authMo
 	}
 
 	//Existing User - generate new token
-	apiToken, err := a.tokenRepo.GenerateToken(ctx, extUser.UserID)
+	apiToken, err := a.tokenRepo.GenerateAPIToken(ctx, extUser.UserID)
 	if err != nil {
 		return nil, err
 	}

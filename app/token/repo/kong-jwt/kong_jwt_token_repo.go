@@ -2,13 +2,9 @@ package kong_jwt
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
 	"github.com/dgrijalva/jwt-go"
-	"net/http"
-	"net/url"
-	"pixstall-user/app/token/repo/kong-jwt/model"
 	"pixstall-user/domain/token"
+	"time"
 )
 
 type RefreshClaims struct {
@@ -16,7 +12,19 @@ type RefreshClaims struct {
 	jwt.StandardClaims
 }
 
-var apiSecret = []byte("api_dummy_key")
+var regSecret = []byte("PTDpYC0h0A1FEch84x3U9G4otA11NzSC")
+
+type RegClaims struct {
+	AuthID string `json:"authID"`
+	jwt.StandardClaims
+}
+
+var apiSecret = []byte("nBcWcVKTRiiUT0iaahFBFskAlugkP5GX")
+
+type APIClaims struct {
+	UserID string `json:"userId"`
+	jwt.StandardClaims
+}
 
 const (
 	KongURL = "localhost:8001"
@@ -31,77 +39,44 @@ func NewKongJWTTokenRepo() token.Repo {
 	}
 }
 
-func (k kongJWTTokenRepo) GenerateToken(ctx context.Context, userID string) (string, error) {
-	return "", errors.New("")
-}
-
-func retrieveConsumer(consumerUserName string) (int, error) {
-	resp, err := http.Get("http://localhost:8001/consumers/" + consumerUserName)
-	if err != nil {
-		return 0, err
+func (k kongJWTTokenRepo) GenerateRegToken(ctx context.Context, authID string) (string, error) {
+	// set claims and sign
+	claims := RegClaims{
+		AuthID: authID,
+		StandardClaims: jwt.StandardClaims{
+			Audience:  "API",
+			ExpiresAt: time.Now().Add(1 * time.Hour).Unix(),
+			Id:        "pixstall-reg-jwt",
+			IssuedAt:  time.Now().Unix(),
+			Issuer:    "pixstall-reg-cred",
+			Subject:   authID,
+		},
 	}
-	return resp.StatusCode, nil
-}
-
-func addConsumerIfNotExist(consumerUserName string) (string, error) {
-	data := url.Values{
-		"username":  {consumerUserName},
-	}
-	resp, err := http.PostForm("http://localhost:8001/consumers", data)
+	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	jwtToken, err := tokenClaims.SignedString(regSecret)
 	if err != nil {
 		return "", err
 	}
-	if resp.StatusCode == http.StatusConflict {
-		return "", &model.DuplicatedConsumerError{}
+	return jwtToken, nil
+}
+
+func (k kongJWTTokenRepo) GenerateAPIToken(ctx context.Context, userID string) (string, error) {
+	// set claims and sign
+	claims := APIClaims{
+		UserID: userID,
+		StandardClaims: jwt.StandardClaims{
+			Audience:  "API",
+			ExpiresAt: time.Now().Add(10 * time.Second).Unix(),
+			Id:        "pixstall-api-jwt",
+			IssuedAt:  time.Now().Unix(),
+			Issuer:    "pixstall-api-cred",
+			Subject:   userID,
+		},
 	}
-	var res map[string]interface{}
-	err = json.NewDecoder(resp.Body).Decode(&res)
+	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	jwtToken, err := tokenClaims.SignedString(apiSecret)
 	if err != nil {
 		return "", err
 	}
-	return res["username"].(string), err
+	return jwtToken, nil
 }
-
-func getJWTCredential(consumerUserName string) (*model.JWTCredential, error) {
-	resp, err := http.Get("http://localhost:8001/consumers/" + consumerUserName + "/jwt")
-	if err != nil {
-		return nil, err
-	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New("user not found")
-	}
-	var lJWTCredResp = model.ListJWTCredentialsResponse{}
-	err = json.NewDecoder(resp.Body).Decode(&lJWTCredResp)
-	if err != nil {
-		return nil, err
-	}
-	if len(lJWTCredResp.Data) < 0 {
-		return nil, errors.New("No credential")
-	}
-	return &lJWTCredResp.Data[0], nil
-}
-
-func createJWTCredentialIfNotExist(consumerUserName string) error {
-
-	resp, err := http.Get("http://localhost:8001/consumers/" + consumerUserName + "/jwt")
-	if err != nil {
-		return err
-	}
-	if resp.StatusCode != http.StatusOK {
-		return errors.New("user not found")
-	}
-	var lJWTCredResp = model.ListJWTCredentialsResponse{}
-	err = json.NewDecoder(resp.Body).Decode(&lJWTCredResp)
-	if err != nil {
-		return err
-	}
-	if len(lJWTCredResp.Data) > 0 {
-		return nil
-	}
-
-	//create one the return
-
-	return nil
-}
-
-
