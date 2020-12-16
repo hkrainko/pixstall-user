@@ -20,7 +20,7 @@ func NewAuthController(useCase auth.UseCase) AuthController {
 }
 
 func (a AuthController) GetAuthURL(c *gin.Context) {
-	authType := c.PostForm("auth_type")
+	authType := c.Query("type")
 	if authType == "" {
 		c.JSON(200, getAuthURL.NewErrorResponse(errors.New("argument")))
 		return

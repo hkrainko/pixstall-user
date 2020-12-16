@@ -1,11 +1,26 @@
 package model
 
-import "strconv"
+import (
+	"strconv"
+)
 
 type UserError int
 
 func (e UserError) Error() string {
-	return strconv.Itoa(int(e))
+	switch e {
+	case UserErrorNotFound:
+		return "UserErrorNotFound"
+	case UserErrorTerminated:
+		return "UserErrorTerminated"
+	case UserErrorDuplicateUser:
+		return "UserErrorDuplicateUser"
+	case UserErrorAuthIDAlreadyRegister:
+		return "UserErrorAuthIDAlreadyRegister"
+	case UserErrorUnknown:
+		return "UserErrorUnknown"
+	default:
+		return strconv.Itoa(int(e))
+	}
 }
 
 const (

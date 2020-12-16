@@ -83,21 +83,21 @@ func main() {
 	authGroup := r.Group("/auth")
 	{
 		ctr := InitAuthController(grpcConn, dbClient.Database("pixstall-user"))
-		authGroup.POST("/getAuthUrl", ctr.GetAuthURL)
-		authGroup.GET("/authCallback", ctr.AuthCallback)
+		authGroup.GET("/url", ctr.GetAuthURL)
+		authGroup.GET("/callback", ctr.AuthCallback)
 	}
 
 	regGroup := r.Group("/reg")
 	{
 		ctr := InitRegController(grpcConn, dbClient.Database("pixstall-user"), ch, awsS3)
-		regGroup.POST("/register", ctr.Registration)
+		regGroup.POST("/registration", ctr.Registration)
 	}
 
-	//userGroup := r.Group("/user")
-	//{
-	//	ctr := InitUserController(conn, dbClient.Database("pixstall-user"))
-	//	regGroup.POST("/")
-	//}
+	userGroup := r.Group("/users")
+	{
+		ctr := InitUserController(grpcConn, dbClient.Database("pixstall-user"), awsS3)
+		userGroup.GET("/:id", ctr.GetUser)
+	}
 
 	err = r.Run(":9001")
 	print(err)

@@ -1,8 +1,10 @@
 package usecase
 
 import (
+	"context"
 	"pixstall-user/domain/image"
 	"pixstall-user/domain/user"
+	"pixstall-user/domain/user/model"
 )
 
 type userUseCase struct {
@@ -15,4 +17,12 @@ func NewUserUseCase(userRepo user.Repo, imageRepo image.Repo) user.UseCase {
 		userRepo: userRepo,
 		imageRepo: imageRepo,
 	}
+}
+
+func (u userUseCase) GetUser(ctx context.Context, userID string) (*model.User, error) {
+	dUser, err := u.userRepo.GetUser(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+	return dUser, nil
 }
