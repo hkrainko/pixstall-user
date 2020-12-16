@@ -33,7 +33,7 @@ func teardown() {
 
 func TestKongJWTTokenRepo_GenerateAPIToken(t *testing.T) {
 	dropAll()
-	token, err := repo.GenerateAPIToken(ctx, "tempUserID_")
+	token, err := repo.GenerateAPIToken(ctx, "temp_UserID")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, token)
 
@@ -42,7 +42,7 @@ func TestKongJWTTokenRepo_GenerateAPIToken(t *testing.T) {
 
 func TestKongJWTTokenRepo_GenerateRegToken(t *testing.T) {
 	dropAll()
-	token, err := repo.GenerateRegToken(ctx, "authID_")
+	token, err := repo.GenerateRegToken(ctx, "temp_AuthID")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, token)
 

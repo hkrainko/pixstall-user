@@ -8,14 +8,14 @@ import (
 )
 
 type RefreshClaims struct {
-	UserID string `json:"authId"`
+	UserID string `json:"userId"`
 	jwt.StandardClaims
 }
 
 var regSecret = []byte("PTDpYC0h0A1FEch84x3U9G4otA11NzSC")
 
 type RegClaims struct {
-	AuthID string `json:"authID"`
+	AuthID string `json:"authId"`
 	jwt.StandardClaims
 }
 

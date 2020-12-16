@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/grpc"
 	"log"
+	"pixstall-user/app/middleware"
 	"time"
 )
 
@@ -89,8 +90,9 @@ func main() {
 
 	regGroup := r.Group("/reg")
 	{
+		authIDExtractor := middleware.NewJWTPayloadsExtractor([]string{"authId"})
 		ctr := InitRegController(grpcConn, dbClient.Database("pixstall-user"), ch, awsS3)
-		regGroup.POST("/registration", ctr.Registration)
+		regGroup.POST("/registration", authIDExtractor.ExtractPayloadsFromJWT, ctr.Registration)
 	}
 
 	userGroup := r.Group("/users")

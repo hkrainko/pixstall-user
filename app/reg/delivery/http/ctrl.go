@@ -21,7 +21,10 @@ func NewRegController(useCase reg.UseCase) RegController {
 }
 
 func (r RegController) Registration(c *gin.Context) {
-	authID := c.PostForm("authId")
+	authID := c.GetString("authId")
+	if authID == "" {
+		return
+	}
 	userID := c.PostForm("userId")
 	displayName := c.PostForm("displayName")
 	email := c.PostForm("email")
