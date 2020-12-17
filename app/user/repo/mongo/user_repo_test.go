@@ -10,6 +10,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"os"
 	mongoModel "pixstall-user/app/user/repo/mongo/model"
+	model2 "pixstall-user/domain/commission/model"
+	indexModel "pixstall-user/domain/inbox/model"
 	"pixstall-user/domain/user"
 	"pixstall-user/domain/user/model"
 	"testing"
@@ -52,16 +54,50 @@ func teardown() {
 	}
 }
 
+func TestMongoUserRepo_GetUser(t *testing.T) {
+	cleanAll()
+	_ = insertDummyUser(ctx, "test_user_id", model.UserStateActive)
+
+	dUser, err := repo.GetUser(ctx, "test_user_id")
+	assert.NoError(t, err)
+
+	assert.Equal(t, "test_user_id", dUser.UserID)
+	assert.Equal(t, "Dummy_UserName", dUser.UserName)
+	assert.Equal(t, "Dummy_ProfilePath", dUser.ProfilePath)
+	assert.Equal(t, model.UserStateActive, dUser.State)
+
+	assert.Empty(t, dUser.AuthID)
+	assert.Empty(t, dUser.Email)
+	assert.Empty(t, dUser.Gender)
+}
+
+func TestMongoUserRepo_GetUserDetails(t *testing.T) {
+	cleanAll()
+	_ = insertDummyUser(ctx, "test_user_id", model.UserStateActive)
+
+	dUser, err := repo.GetUserDetails(ctx, "test_user_id")
+	assert.NoError(t, err)
+
+	assert.Equal(t, "test_user_id", dUser.UserID)
+	assert.Equal(t, "Dummy_UserName", dUser.UserName)
+	assert.Equal(t, "Dummy_ProfilePath", dUser.ProfilePath)
+	assert.Equal(t, model.UserStateActive, dUser.State)
+
+	assert.Equal(t, "Dummy_AuthID", dUser.AuthID)
+	assert.Equal(t, "Dummy_Email", dUser.Email)
+	assert.Equal(t, "M", dUser.Gender)
+}
+
 func TestMongoUserRepo_UpdateUser(t *testing.T) {
 	cleanAll()
 	objectID := insertDummyUser(ctx, "test_user_id", model.UserStatePending)
 	updater := model.UserUpdater{
-		UserName:   "new_UserName",
-		Email:      "new_Email",
-		Birthday:   "20201230",
-		Gender:     "F",
-		ProfilePath:   "new_ProfilePath",
-		State:      model.UserStateActive,
+		UserName:    "new_UserName",
+		Email:       "new_Email",
+		Birthday:    "20201230",
+		Gender:      "F",
+		ProfilePath: "new_ProfilePath",
+		State:       model.UserStateActive,
 	}
 	err := repo.UpdateUser(ctx, "test_user_id", &updater)
 	assert.NoError(t, err)
@@ -82,8 +118,8 @@ func TestMongoUserRepo_UpdateUser_userNameOnly(t *testing.T) {
 	cleanAll()
 	objectID := insertDummyUser(ctx, "test_user_id", model.UserStatePending)
 	updater := model.UserUpdater{
-		UserName:   "new_UserName",
-		State:      model.UserStateActive,
+		UserName: "new_UserName",
+		State:    model.UserStateActive,
 	}
 	err := repo.UpdateUser(ctx, "test_user_id", &updater)
 	assert.NoError(t, err)
@@ -104,9 +140,9 @@ func TestMongoUserRepo_UpdateUserByAuthID_userNameOnly(t *testing.T) {
 	cleanAll()
 	objectID := insertDummyUser(ctx, "test_user_id", model.UserStatePending)
 	updater := model.UserUpdater{
-		UserID:     "new_UserID",
-		UserName:   "new_UserName",
-		State:      model.UserStateActive,
+		UserID:   "new_UserID",
+		UserName: "new_UserName",
+		State:    model.UserStateActive,
 	}
 	err := repo.UpdateUserByAuthID(ctx, "Dummy_AuthID", &updater)
 	assert.NoError(t, err)
@@ -170,16 +206,28 @@ func insertDummyUser(ctx context.Context, userId string, state model.UserState) 
 	c := db.Collection(UserCollection)
 
 	user := mongoModel.User{
-		UserID:   userId,
-		AuthID:   "Dummy_AuthID",
-		UserName: "Dummy_UserName",
-		AuthType: "Dummy_AuthType",
-		Token:    "Dummy_Token",
-		Email:    "Dummy_Email",
-		Birthday: "20200101",
-		Gender:   "M",
+		UserID:      userId,
+		AuthID:      "Dummy_AuthID",
+		UserName:    "Dummy_UserName",
+		AuthType:    "Dummy_AuthType",
+		Email:       "Dummy_Email",
+		Birthday:    "20200101",
+		Gender:      "M",
 		ProfilePath: "Dummy_ProfilePath",
-		State:    state,
+		State:       state,
+		Inbox: indexModel.Inbox{
+			UnreadMessageCount: 10,
+			LastChat:           indexModel.Chat{
+				ID:          "12345",
+				UserIDs:     nil,
+				LastMessage: "Dummy_LastMessage",
+				Read:        "",
+			},
+		},
+		Commission: model2.Commission{
+			MessageCount: 10,
+			LastMessage:  "Dummy_LastMessage",
+		},
 	}
 	result, err := c.InsertOne(ctx, &user)
 	if err != nil {

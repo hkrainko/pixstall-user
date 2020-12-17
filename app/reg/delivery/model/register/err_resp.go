@@ -1,7 +1,7 @@
 package register
 
 import (
-	"pixstall-user/app/utils"
+	"net/http"
 	"pixstall-user/domain/user/model"
 )
 
@@ -9,25 +9,25 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-func NewErrorResponse(err error) interface{} {
+func NewErrorResponse(err error) (int, interface{}) {
 	if userError, isError := err.(model.UserError); isError {
 		switch userError {
 		case model.UserErrorDuplicateUser:
-			return utils.NewAPIResponse(int(model.UserErrorDuplicateUser), ErrorResponse{
+			return http.StatusConflict, ErrorResponse{
 				Message: userError.Error(),
-			})
+			}
 		case model.UserErrorAuthIDAlreadyRegister:
-			return utils.NewAPIResponse(int(model.UserErrorAuthIDAlreadyRegister), ErrorResponse{
+			return http.StatusConflict, ErrorResponse{
 				Message: userError.Error(),
-			})
+			}
 		default:
-			return utils.NewAPIResponse(99, ErrorResponse{
-				Message: err.Error(),
-			})
+			return http.StatusInternalServerError, ErrorResponse{
+				Message: http.StatusText(http.StatusInternalServerError),
+			}
 		}
 	} else {
-		return utils.NewAPIResponse(99, ErrorResponse{
-			Message: err.Error(),
-		})
+		return http.StatusInternalServerError, ErrorResponse{
+			Message: http.StatusText(http.StatusInternalServerError),
+		}
 	}
 }

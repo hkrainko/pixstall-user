@@ -3,22 +3,25 @@ package model
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	authModel "pixstall-user/domain/auth/model"
+	commissionModel "pixstall-user/domain/commission/model"
+	indexModel "pixstall-user/domain/inbox/model"
 	"pixstall-user/domain/user/model"
 )
 
 type User struct {
-	ObjectID    primitive.ObjectID `bson:"_id,omitempty"`
-	UserID      string             `bson:"userId,omitempty"`
-	AuthID      string             `bson:"authId,omitempty"`
-	UserName    string             `bson:"userName,omitempty"`
-	AuthType    string             `bson:"authType,omitempty"`
-	Token       string             `bson:"token,omitempty"`
-	Email       string             `bson:"email,omitempty"`
-	Birthday    string             `bson:"birthday,omitempty"`
-	Gender      string             `bson:"gender,omitempty"`
-	ProfilePath string             `bson:"profilePath,omitempty"`
-	IsArtist    bool               `bson:"isArtist"`
-	State       model.UserState    `bson:"state,omitempty"`
+	ObjectID    primitive.ObjectID          `bson:"_id,omitempty"`
+	UserID      string                      `bson:"userId,omitempty"`
+	AuthID      string                      `bson:"authId,omitempty"`
+	UserName    string                      `bson:"userName,omitempty"`
+	AuthType    string                      `bson:"authType,omitempty"`
+	Email       string                      `bson:"email,omitempty"`
+	Birthday    string                      `bson:"birthday,omitempty"`
+	Gender      string                      `bson:"gender,omitempty"`
+	ProfilePath string                      `bson:"profilePath,omitempty"`
+	IsArtist    bool                        `bson:"isArtist"`
+	State       model.UserState             `bson:"state,omitempty"`
+	Inbox       indexModel.Inbox           `bson:"inbox,omitempty"`
+	Commission  commissionModel.Commission `bson:"commission,omitempty"`
 }
 
 func (u *User) ToDomainUser() *model.User {
@@ -33,6 +36,8 @@ func (u *User) ToDomainUser() *model.User {
 		ProfilePath: u.ProfilePath,
 		IsArtist:    u.IsArtist,
 		State:       u.State,
+		Inbox:       u.Inbox,
+		Commission:  u.Commission,
 	}
 }
 

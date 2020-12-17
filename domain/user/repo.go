@@ -12,5 +12,6 @@ type Repo interface {
 	UpdateUserByAuthID(ctx context.Context, authID string, user *userModel.UserUpdater) error
 	GetUserByAuthID(ctx context.Context, authID string) (*userModel.User, error)
 	GetUser(ctx context.Context, userID string) (*userModel.User, error)
+	GetUserDetails(ctx context.Context, userID string) (*userModel.User, error)
 	IsUserExist(ctx context.Context, userID string) (*bool, error)
 }

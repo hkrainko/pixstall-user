@@ -7,5 +7,5 @@ import (
 )
 
 type UseCase interface {
-	Registration(ctx context.Context, info *model.RegInfo, pngImage image.Image) error
+	Registration(ctx context.Context, info *model.RegInfo, pngImage image.Image) (apiToken string, err error)
 }

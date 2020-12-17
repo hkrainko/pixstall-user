@@ -4,7 +4,6 @@ import (
 	"context"
 	"pixstall-user/domain/auth"
 	authModel "pixstall-user/domain/auth/model"
-	"pixstall-user/domain/reg"
 	"pixstall-user/domain/token"
 	"pixstall-user/domain/user"
 	"pixstall-user/domain/user/model"
@@ -14,15 +13,13 @@ type authUseCase struct {
 	authRepo  auth.Repo
 	userRepo  user.Repo
 	tokenRepo token.Repo
-	regRepo   reg.Repo
 }
 
-func NewAuthUseCase(authRepo auth.Repo, userRepo user.Repo, tokenRepo token.Repo, regRepo reg.Repo) auth.UseCase {
+func NewAuthUseCase(authRepo auth.Repo, userRepo user.Repo, tokenRepo token.Repo) auth.UseCase {
 	return &authUseCase{
 		authRepo:  authRepo,
 		userRepo:  userRepo,
 		tokenRepo: tokenRepo,
-		regRepo:   regRepo,
 	}
 }
 
@@ -46,7 +43,7 @@ func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authMo
 				if err != nil {
 					return nil, err
 				}
-				regToken, err := a.regRepo.GenerateRegToken(ctx, newUser.AuthID)
+				regToken, err := a.tokenRepo.GenerateRegToken(ctx, newUser.AuthID)
 				if err != nil {
 					return nil, err
 				}

@@ -97,8 +97,10 @@ func main() {
 
 	userGroup := r.Group("/users")
 	{
+		userIDExtractor := middleware.NewJWTPayloadsExtractor([]string{"userId"})
 		ctr := InitUserController(grpcConn, dbClient.Database("pixstall-user"), awsS3)
 		userGroup.GET("/:id", ctr.GetUser)
+		userGroup.GET("/:id/details", userIDExtractor.ExtractPayloadsFromJWT, ctr.GetUserDetails)
 	}
 
 	err = r.Run(":9001")

@@ -68,10 +68,10 @@ func (r RegController) Registration(c *gin.Context) {
 		}(),
 		RegArtistIntro: model2.ArtistIntro{},
 	}
-	err = r.regUseCase.Registration(c, &regInfo, pngImage)
+	apiToken, err := r.regUseCase.Registration(c, &regInfo, pngImage)
 	if err != nil {
-		c.JSON(200, register.NewErrorResponse(err))
+		c.JSON(register.NewErrorResponse(err))
 		return
 	}
-	c.JSON(200, register.NewSuccessResponse())
+	c.JSON(register.NewSuccessResponse(apiToken))
 }

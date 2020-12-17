@@ -15,7 +15,6 @@ import (
 	"pixstall-user/app/auth/usecase"
 	"pixstall-user/app/image/aws-s3"
 	http2 "pixstall-user/app/reg/delivery/http"
-	"pixstall-user/app/reg/repo/default"
 	usecase2 "pixstall-user/app/reg/usecase"
 	"pixstall-user/app/token/repo/kong-jwt"
 	http3 "pixstall-user/app/user/delivery/http"
@@ -30,8 +29,7 @@ func InitAuthController(grpcConn *grpc.ClientConn, db *mongo.Database) http.Auth
 	repo := grpc2.NewGRPCAuthRepository(grpcConn)
 	userRepo := mongo2.NewMongoUserRepo(db)
 	tokenRepo := kong_jwt.NewKongJWTTokenRepo()
-	regRepo := _default.NewDefaultRegRepo()
-	useCase := usecase.NewAuthUseCase(repo, userRepo, tokenRepo, regRepo)
+	useCase := usecase.NewAuthUseCase(repo, userRepo, tokenRepo)
 	authController := http.NewAuthController(useCase)
 	return authController
 }
@@ -40,8 +38,8 @@ func InitRegController(grpcConn *grpc.ClientConn, db *mongo.Database, ch *amqp.C
 	repo := mongo2.NewMongoUserRepo(db)
 	msgBroker := rabbitmq.NewRabbitMQUserMsgBroker(ch)
 	imageRepo := aws_s3.NewAWSS3ImageRepository(awsS3)
-	regRepo := _default.NewDefaultRegRepo()
-	useCase := usecase2.NewRegUseCase(repo, msgBroker, imageRepo, regRepo)
+	tokenRepo := kong_jwt.NewKongJWTTokenRepo()
+	useCase := usecase2.NewRegUseCase(repo, msgBroker, imageRepo, tokenRepo)
 	regController := http2.NewRegController(useCase)
 	return regController
 }

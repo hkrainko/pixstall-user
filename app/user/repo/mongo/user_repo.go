@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	mongoModel "pixstall-user/app/user/repo/mongo/model"
 	authModel "pixstall-user/domain/auth/model"
 	"pixstall-user/domain/user"
@@ -142,6 +143,33 @@ func (m mongoUserRepo) GetUserByAuthID(ctx context.Context, authID string) (*use
 }
 
 func (m mongoUserRepo) GetUser(ctx context.Context, userID string) (*userModel.User, error) {
+	collection := m.db.Collection(UserCollection)
+	filter := bson.M{"userId": userID}
+	opt := options.FindOneOptions{
+		Projection: bson.D{
+			{"authId", 0},
+			{"authType", 0},
+			{"email", 0},
+			{"birthday", 0},
+			{"gender", 0},
+			{"inbox", 0},
+			{"commission", 0},
+		},
+	}
+	mongoUser := mongoModel.User{}
+	err := collection.FindOne(ctx, filter, &opt).Decode(&mongoUser)
+	if err != nil {
+		switch err {
+		case mongo.ErrNoDocuments:
+			return nil, userModel.UserErrorNotFound
+		default:
+			return nil, userModel.UserErrorUnknown
+		}
+	}
+	return mongoUser.ToDomainUser(), nil
+}
+
+func (m mongoUserRepo) GetUserDetails(ctx context.Context, userID string) (*userModel.User, error) {
 	collection := m.db.Collection(UserCollection)
 	filter := bson.M{"userId": userID}
 	mongoUser := mongoModel.User{}

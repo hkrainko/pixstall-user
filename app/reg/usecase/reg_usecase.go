@@ -9,6 +9,7 @@ import (
 	domainImage "pixstall-user/domain/image"
 	"pixstall-user/domain/reg"
 	"pixstall-user/domain/reg/model"
+	"pixstall-user/domain/token"
 	"pixstall-user/domain/user"
 	userModel "pixstall-user/domain/user/model"
 	"strings"
@@ -18,36 +19,36 @@ type regUseCase struct {
 	userRepo      user.Repo
 	userMsgBroker user.MsgBroker
 	imageRepo     domainImage.Repo
-	regRepo       reg.Repo
+	tokenRepo     token.Repo
 }
 
-func NewRegUseCase(userRepo user.Repo, userMsgBroker user.MsgBroker, imageRepo domainImage.Repo, regRepo reg.Repo) reg.UseCase {
+func NewRegUseCase(userRepo user.Repo, userMsgBroker user.MsgBroker, imageRepo domainImage.Repo, tokenRepo token.Repo) reg.UseCase {
 	return &regUseCase{
 		userRepo:      userRepo,
 		userMsgBroker: userMsgBroker,
 		imageRepo:     imageRepo,
-		regRepo:       regRepo,
+		tokenRepo:     tokenRepo,
 	}
 }
 
-func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo, pngImage image.Image) error {
+func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo, pngImage image.Image) (string, error) {
 
 	//Check if authUser exist and in pending state
 	extUser, err := r.userRepo.GetUserByAuthID(ctx, info.AuthID)
 	if err != nil {
-		return err
+		return "", err
 	}
 	if extUser.State != userModel.UserStatePending {
-		return userModel.UserErrorAuthIDAlreadyRegister
+		return "", userModel.UserErrorAuthIDAlreadyRegister
 	}
 
 	//Check if userId exist
 	exist, err := r.userRepo.IsUserExist(ctx, info.UserID)
 	if err != nil {
-		return err
+		return "", err
 	}
 	if *exist {
-		return userModel.UserErrorDuplicateUser
+		return "", userModel.UserErrorDuplicateUser
 	}
 
 	//Upload image
@@ -90,7 +91,7 @@ func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo, pngIm
 
 	err = r.userRepo.UpdateUserByAuthID(ctx, info.AuthID, &updater)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	if info.RegAsArtist {
@@ -107,5 +108,10 @@ func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo, pngIm
 		}
 	}
 
-	return nil
+	apiToken, err := r.tokenRepo.GenerateAPIToken(ctx, info.UserID)
+	if err != nil {
+		log.Println(err)
+	}
+
+	return apiToken, nil
 }

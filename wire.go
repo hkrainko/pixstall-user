@@ -13,7 +13,6 @@ import (
 	auth_ucase "pixstall-user/app/auth/usecase"
 	image_repo "pixstall-user/app/image/aws-s3"
 	reg_deliv "pixstall-user/app/reg/delivery/http"
-	reg_repo "pixstall-user/app/reg/repo/default"
 	reg_ucase "pixstall-user/app/reg/usecase"
 	token_repo "pixstall-user/app/token/repo/kong-jwt"
 	user_deliv "pixstall-user/app/user/delivery/http"
@@ -29,7 +28,6 @@ func InitAuthController(grpcConn *grpc.ClientConn, db *mongo.Database) auth_deli
 		auth_repo.NewGRPCAuthRepository,
 		user_repo.NewMongoUserRepo,
 		token_repo.NewKongJWTTokenRepo,
-		reg_repo.NewDefaultRegRepo,
 	)
 	return auth_deliv.AuthController{}
 }
@@ -39,9 +37,9 @@ func InitRegController(grpcConn *grpc.ClientConn, db *mongo.Database, ch *amqp.C
 		reg_deliv.NewRegController,
 		user_repo.NewMongoUserRepo,
 		reg_ucase.NewRegUseCase,
-		reg_repo.NewDefaultRegRepo,
 		user_msg_broker.NewRabbitMQUserMsgBroker,
 		image_repo.NewAWSS3ImageRepository,
+		token_repo.NewKongJWTTokenRepo,
 	)
 	return reg_deliv.RegController{}
 }

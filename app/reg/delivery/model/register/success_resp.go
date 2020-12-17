@@ -1,13 +1,13 @@
 package register
 
-import "pixstall-user/app/utils"
+import (
+	"net/http"
+)
 
 type SuccessResponse struct {
-
+	APIToken string
 }
 
-func NewSuccessResponse() interface{} {
-	return utils.NewAPIResponse(0, SuccessResponse{
-
-	})
+func NewSuccessResponse(apiToken string) (int, interface{}) {
+	return http.StatusOK, SuccessResponse{APIToken: apiToken}
 }

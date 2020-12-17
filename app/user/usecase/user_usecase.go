@@ -26,3 +26,11 @@ func (u userUseCase) GetUser(ctx context.Context, userID string) (*model.User, e
 	}
 	return dUser, nil
 }
+
+func (u userUseCase) GetUserDetails(ctx context.Context, userID string) (*model.User, error) {
+	dUser, err := u.userRepo.GetUserDetails(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+	return dUser, nil
+}
