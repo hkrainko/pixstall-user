@@ -101,6 +101,7 @@ func main() {
 		ctr := InitUserController(grpcConn, dbClient.Database("pixstall-user"), awsS3)
 		userGroup.GET("/:id", ctr.GetUser)
 		userGroup.GET("/:id/details", userIDExtractor.ExtractPayloadsFromJWT, ctr.GetUserDetails)
+		userGroup.PATCH("/:id", userIDExtractor.ExtractPayloadsFromJWT, ctr.UpdateUser)
 	}
 
 	err = r.Run(":9001")

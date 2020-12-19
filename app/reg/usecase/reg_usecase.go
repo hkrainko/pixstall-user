@@ -78,14 +78,15 @@ func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo, pngIm
 		return path + fileName
 	}()
 
+	state := userModel.UserStateActive
 	updater := userModel.UserUpdater{
 		UserID:      info.UserID,
-		UserName:    info.DisplayName,
-		Email:       info.Email,
-		Birthday:    info.Birthday,
-		Gender:      info.Gender,
-		ProfilePath: profilePath,
-		State:       userModel.UserStateActive,
+		UserName:    &info.DisplayName,
+		Email:       &info.Email,
+		Birthday:    &info.Birthday,
+		Gender:      &info.Gender,
+		ProfilePath: &profilePath,
+		State:       &state,
 		IsArtist:    &info.RegAsArtist,
 	}
 

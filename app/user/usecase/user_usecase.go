@@ -34,3 +34,15 @@ func (u userUseCase) GetUserDetails(ctx context.Context, userID string) (*model.
 	}
 	return dUser, nil
 }
+
+func (u userUseCase) UpdateUser(ctx context.Context, updater *model.UserUpdater) (*model.User, error) {
+	err := u.userRepo.UpdateUser(ctx, updater.UserID, updater)
+	if err != nil {
+		return nil, err
+	}
+	dUser, err := u.userRepo.GetUserDetails(ctx, updater.UserID)
+	if err != nil {
+		return nil, err
+	}
+	return dUser, nil
+}

@@ -6,9 +6,17 @@ import (
 )
 
 type SuccessResponse struct {
-	*model.User
+	UserID      string
+	UserName    string
+	ProfilePath string
+	IsArtist    bool
 }
 
 func NewSuccessResponse(user *model.User) (int, interface{}) {
-	return http.StatusOK, SuccessResponse{user}
+	return http.StatusOK, SuccessResponse{
+		UserID:      user.UserID,
+		UserName:    user.UserName,
+		ProfilePath: user.ProfilePath,
+		IsArtist:    user.IsArtist,
+	}
 }

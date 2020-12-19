@@ -53,22 +53,22 @@ func (m mongoUserRepo) UpdateUser(ctx context.Context, userID string, updater *u
 	filter := bson.M{"userId": userID}
 	update := bson.M{}
 
-	if updater.UserName != "" {
+	if updater.UserName != nil {
 		update["userName"] = updater.UserName
 	}
-	if updater.Email != "" {
+	if updater.Email != nil {
 		update["email"] = updater.Email
 	}
-	if updater.Birthday != "" {
+	if updater.Birthday != nil {
 		update["birthday"] = updater.Birthday
 	}
-	if updater.Gender != "" {
+	if updater.Gender != nil {
 		update["gender"] = updater.Gender
 	}
-	if updater.ProfilePath != "" {
+	if updater.ProfilePath != nil {
 		update["profilePath"] = updater.ProfilePath
 	}
-	if updater.State != "" {
+	if updater.State != nil {
 		update["state"] = updater.State
 	}
 	if updater.IsArtist != nil {
@@ -95,22 +95,22 @@ func (m mongoUserRepo) UpdateUserByAuthID(ctx context.Context, authID string, up
 	} else {
 		//TODO: return error
 	}
-	if updater.UserName != "" {
+	if updater.UserName != nil {
 		update["userName"] = updater.UserName
 	}
-	if updater.Email != "" {
+	if updater.Email != nil {
 		update["email"] = updater.Email
 	}
-	if updater.Birthday != "" {
+	if updater.Birthday != nil {
 		update["birthday"] = updater.Birthday
 	}
-	if updater.Gender != "" {
+	if updater.Gender != nil {
 		update["gender"] = updater.Gender
 	}
-	if updater.ProfilePath != "" {
+	if updater.ProfilePath != nil {
 		update["profilePath"] = updater.ProfilePath
 	}
-	if updater.State != "" {
+	if updater.State != nil {
 		update["state"] = updater.State
 	}
 	if updater.IsArtist != nil {

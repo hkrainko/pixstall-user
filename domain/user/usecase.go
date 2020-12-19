@@ -8,4 +8,5 @@ import (
 type UseCase interface {
 	GetUser(ctx context.Context, userID string) (*domainUserModel.User, error)
 	GetUserDetails(ctx context.Context, userID string) (*domainUserModel.User, error)
+	UpdateUser(ctx context.Context, updater *domainUserModel.UserUpdater) (*domainUserModel.User, error)
 }
