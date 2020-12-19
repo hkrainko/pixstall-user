@@ -1,6 +1,7 @@
 package auth_callback
 
 import (
+	"net/http"
 	authModel "pixstall-user/domain/auth/model"
 )
 
@@ -17,8 +18,8 @@ type SuccessResponse struct {
 	State    string `json:"state"`
 }
 
-func NewSuccessResponse(cb *authModel.HandledAuthCallback) *SuccessResponse {
-	return &SuccessResponse{
+func NewSuccessResponse(cb *authModel.HandledAuthCallback) (int, *SuccessResponse) {
+	return http.StatusOK, &SuccessResponse{
 		AuthID:   cb.AuthID,
 		UserName: cb.UserName,
 		AuthType: cb.AuthType,

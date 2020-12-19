@@ -34,12 +34,17 @@ func (u UserController) GetUser(c *gin.Context) {
 
 //For authed user
 func (u UserController) GetUserDetails(c *gin.Context) {
-	userID := c.GetString("userId")
-	if userID == "" {
+	pathUserID := c.Param("id")
+	tokenUserID := c.GetString("userId")
+	if tokenUserID == "" || pathUserID == "" {
 		c.JSON(get_user.NewErrorResponse(errors.New("userID format invalid")))
 		return
 	}
-	dUser, err := u.userUseCase.GetUserDetails(c, userID)
+	if tokenUserID != pathUserID {
+		c.JSON(get_user.NewErrorResponse(errors.New("userIDs not match")))
+		return
+	}
+	dUser, err := u.userUseCase.GetUserDetails(c, pathUserID)
 	if err != nil {
 		c.JSON(get_user.NewErrorResponse(err))
 		return

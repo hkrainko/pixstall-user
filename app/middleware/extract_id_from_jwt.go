@@ -36,7 +36,6 @@ func (j *JWTPayloadsExtractor) ExtractPayloadsFromJWT(c *gin.Context) {
 		return
 	}
 
-
 	var nMap map[string]interface{}
 	err = json.Unmarshal(b, &nMap)
 	if err != nil {

@@ -22,14 +22,14 @@ func NewAuthController(useCase auth.UseCase) AuthController {
 func (a AuthController) GetAuthURL(c *gin.Context) {
 	authType := c.Query("type")
 	if authType == "" {
-		c.JSON(http.StatusBadRequest, getAuthURL.ErrorResponse{
+		c.AbortWithStatusJSON(http.StatusBadRequest, getAuthURL.ErrorResponse{
 			Message: "Auth type missing",
 		})
 		return
 	}
 	url, err := a.authUseCase.GetAuthURL(c, authType)
 	if err != nil {
-		c.JSON(getAuthURL.NewErrorResponse(err))
+		c.AbortWithStatusJSON(getAuthURL.NewErrorResponse(err))
 		return
 	}
 	c.JSON(getAuthURL.NewSuccessResponse(url))
@@ -48,8 +48,8 @@ func (a AuthController) AuthCallback(c *gin.Context) {
 		Code:     code,
 	})
 	if err != nil {
-		c.JSON(200, authCallback.NewErrorResponse(err))
+		c.AbortWithStatusJSON(authCallback.NewErrorResponse(err))
+		return
 	}
-
-	c.PureJSON(200, authCallback.NewSuccessResponse(handledAuthCallback))
+	c.PureJSON(authCallback.NewSuccessResponse(handledAuthCallback))
 }
