@@ -6,6 +6,7 @@ require (
 	github.com/aws/aws-sdk-go v1.36.6
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/disintegration/imaging v1.6.2
+	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.6.3
 	github.com/golang/protobuf v1.4.1
 	github.com/google/uuid v1.1.2

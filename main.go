@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/endpoints"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	cors "github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -80,22 +81,35 @@ func main() {
 	defer grpcConn.Close()
 
 	r := gin.Default()
+	//r.Use(cors.Default())
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Access-Control-Allow-Origin", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		AllowWildcard: true,
+		AllowFiles: true,
+		MaxAge: 12 * time.Hour,
+	}))
 
-	authGroup := r.Group("/auth")
+	apiGroup := r.Group("/api")
+
+	authGroup := apiGroup.Group("/auth")
 	{
 		ctr := InitAuthController(grpcConn, dbClient.Database("pixstall-user"))
 		authGroup.GET("/url", ctr.GetAuthURL)
 		authGroup.GET("/callback", ctr.AuthCallback)
 	}
 
-	regGroup := r.Group("/reg")
+	regGroup := apiGroup.Group("/reg")
 	{
 		authIDExtractor := middleware.NewJWTPayloadsExtractor([]string{"authId"})
 		ctr := InitRegController(grpcConn, dbClient.Database("pixstall-user"), ch, awsS3)
 		regGroup.POST("/registration", authIDExtractor.ExtractPayloadsFromJWT, ctr.Registration)
 	}
 
-	userGroup := r.Group("/users")
+	userGroup := apiGroup.Group("/users")
 	{
 		userIDExtractor := middleware.NewJWTPayloadsExtractor([]string{"userId"})
 		ctr := InitUserController(grpcConn, dbClient.Database("pixstall-user"), awsS3)
