@@ -91,13 +91,20 @@ func TestMongoUserRepo_GetUserDetails(t *testing.T) {
 func TestMongoUserRepo_UpdateUser(t *testing.T) {
 	cleanAll()
 	objectID := insertDummyUser(ctx, "test_user_id", model.UserStatePending)
+
+	userName := "new_UserName"
+	email := "new_Email"
+	birthday := "20201230"
+	gender := "F"
+	profilePath := "new_ProfilePath"
+	state := model.UserStateActive
 	updater := model.UserUpdater{
-		UserName:    "new_UserName",
-		Email:       "new_Email",
-		Birthday:    "20201230",
-		Gender:      "F",
-		ProfilePath: "new_ProfilePath",
-		State:       model.UserStateActive,
+		UserName:    &userName,
+		Email:       &email,
+		Birthday:    &birthday,
+		Gender:      &gender,
+		ProfilePath: &profilePath,
+		State:       &state,
 	}
 	err := repo.UpdateUser(ctx, "test_user_id", &updater)
 	assert.NoError(t, err)
@@ -117,9 +124,11 @@ func TestMongoUserRepo_UpdateUser(t *testing.T) {
 func TestMongoUserRepo_UpdateUser_userNameOnly(t *testing.T) {
 	cleanAll()
 	objectID := insertDummyUser(ctx, "test_user_id", model.UserStatePending)
+	userName := "new_UserName"
+	state := model.UserStateActive
 	updater := model.UserUpdater{
-		UserName: "new_UserName",
-		State:    model.UserStateActive,
+		UserName: &userName,
+		State:    &state,
 	}
 	err := repo.UpdateUser(ctx, "test_user_id", &updater)
 	assert.NoError(t, err)
@@ -139,10 +148,12 @@ func TestMongoUserRepo_UpdateUser_userNameOnly(t *testing.T) {
 func TestMongoUserRepo_UpdateUserByAuthID_userNameOnly(t *testing.T) {
 	cleanAll()
 	objectID := insertDummyUser(ctx, "test_user_id", model.UserStatePending)
+	userName := "new_UserName"
+	state := model.UserStateActive
 	updater := model.UserUpdater{
 		UserID:   "new_UserID",
-		UserName: "new_UserName",
-		State:    model.UserStateActive,
+		UserName: &userName,
+		State:    &state,
 	}
 	err := repo.UpdateUserByAuthID(ctx, "Dummy_AuthID", &updater)
 	assert.NoError(t, err)
@@ -164,10 +175,12 @@ func TestMongoUserRepo_UpdateUserByAuthID_BeArtist(t *testing.T) {
 	cleanAll()
 	objectID := insertDummyUser(ctx, "Dummy_AuthID", model.UserStatePending)
 	isArtist := true
+	userName := "new_UserName"
+	state := model.UserStateActive
 	updater := model.UserUpdater{
 		UserID:   "new_UserID",
-		UserName: "new_UserName",
-		State:    model.UserStateActive,
+		UserName: &userName,
+		State:    &state,
 		IsArtist: &isArtist,
 	}
 	err := repo.UpdateUserByAuthID(ctx, "Dummy_AuthID", &updater)
