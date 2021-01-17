@@ -60,21 +60,33 @@ func (a authUseCase) HandleAuthCallback(ctx context.Context, authCallBack authMo
 		}
 	}
 
-	if extUser.State == model.UserStateTerminated {
+	switch extUser.State {
+	case model.UserStateTerminated:
 		return nil, model.UserErrorTerminated
+	case model.UserStatePending:
+		regToken, err := a.tokenRepo.GenerateRegToken(ctx, extUser.AuthID)
+		if err != nil {
+			return nil, err
+		}
+		return &authModel.HandledAuthCallback{
+			RegToken: regToken,
+			User:     *extUser,
+			PhotoUrl: authUserInfo.PhotoURL,
+		}, nil
+	case model.UserStateActive:
+		//Existing User - generate new token
+		apiToken, err := a.tokenRepo.GenerateAPIToken(ctx, extUser.UserID)
+		if err != nil {
+			return nil, err
+		}
+		return &authModel.HandledAuthCallback{
+			APIToken: apiToken,
+			User:     *extUser,
+			PhotoUrl: authUserInfo.PhotoURL,
+		}, nil
+	default:
+		return nil, model.UserErrorUnknown
 	}
-
-	//Existing User - generate new token
-	apiToken, err := a.tokenRepo.GenerateAPIToken(ctx, extUser.UserID)
-	if err != nil {
-		return nil, err
-	}
-
-	return &authModel.HandledAuthCallback{
-		APIToken: apiToken,
-		User:     *extUser,
-		PhotoUrl: authUserInfo.PhotoURL,
-	}, nil
 }
 
 func (a authUseCase) createNewUser(ctx context.Context, authUserInfo *authModel.AuthUserInfo) (*model.User, error) {
