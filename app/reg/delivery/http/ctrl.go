@@ -8,6 +8,7 @@ import (
 	model2 "pixstall-user/domain/artist/model"
 	"pixstall-user/domain/reg"
 	"pixstall-user/domain/reg/model"
+	"strconv"
 )
 
 type RegController struct {
@@ -31,6 +32,15 @@ func (r RegController) Registration(c *gin.Context) {
 	birthday := c.PostForm("birthday")
 	gender := c.PostForm("gender")
 	regAsArtist := c.PostForm("regAsArtist")
+	var yearOfDrawing int
+	var artTypes []string
+	if regAsArtist == "Y" {
+		i, err := strconv.Atoi(c.PostForm("yearOfDrawing"))
+		if err != nil {
+			yearOfDrawing = i
+		}
+		artTypes = c.PostFormArray("artTypes")
+	}
 	profile, err := c.FormFile("profile")
 	pngImage := func() image.Image {
 		if err != nil {
@@ -66,7 +76,11 @@ func (r RegController) Registration(c *gin.Context) {
 			}
 			return false
 		}(),
-		RegArtistIntro: model2.ArtistIntro{},
+		RegArtistIntro: model2.ArtistIntro{
+			YearOfDrawing: &yearOfDrawing,
+			ArtTypes:      &artTypes,
+			SelfIntro:     nil,
+		},
 	}
 	apiToken, err := r.regUseCase.Registration(c, &regInfo, pngImage)
 	if err != nil {
