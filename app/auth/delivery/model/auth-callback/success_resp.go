@@ -7,6 +7,7 @@ import (
 
 type SuccessResponse struct {
 	AuthID     string `json:"authId"`
+	UserID     string `json:"userId"`
 	UserName   string `json:"userName"`
 	AuthType   string `json:"authType"`
 	APIToken   string `json:"apiToken"`
@@ -22,6 +23,7 @@ type SuccessResponse struct {
 func NewSuccessResponse(cb *authModel.HandledAuthCallback) (int, *SuccessResponse) {
 	return http.StatusOK, &SuccessResponse{
 		AuthID:     cb.AuthID,
+		UserID:     cb.UserID,
 		UserName:   cb.UserName,
 		AuthType:   cb.AuthType,
 		APIToken:   cb.APIToken,

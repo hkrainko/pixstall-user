@@ -15,6 +15,7 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"pixstall-user/app/middleware"
+	"strings"
 	"time"
 )
 
@@ -113,8 +114,14 @@ func main() {
 	{
 		userIDExtractor := middleware.NewJWTPayloadsExtractor([]string{"userId"})
 		ctr := InitUserController(grpcConn, dbClient.Database("pixstall-user"), awsS3)
-		userGroup.GET("/:id", ctr.GetUser)
-		userGroup.GET("/:id/details", userIDExtractor.ExtractPayloadsFromJWT, ctr.GetUserDetails)
+		userGroup.GET("/:id", func(c *gin.Context) {
+			if strings.HasSuffix(c.Request.RequestURI, "/me") {
+				userIDExtractor.ExtractPayloadsFromJWT(c)
+				ctr.GetUserDetails(c)
+				return
+			}
+			ctr.GetUser(c)
+		})
 		userGroup.PATCH("/:id", userIDExtractor.ExtractPayloadsFromJWT, ctr.UpdateUser)
 	}
 
