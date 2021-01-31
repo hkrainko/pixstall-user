@@ -27,19 +27,19 @@ func (j *JWTPayloadsExtractor) ExtractPayloadsFromJWT(c *gin.Context) {
 	ss := strings.Split(jwtToken, ".")
 
 	if len(ss) != 3 {
-		c.AbortWithStatus(http.StatusInternalServerError)
+		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 	b, err := base64.RawStdEncoding.DecodeString(ss[1])
 	if b == nil {
-		c.AbortWithStatus(http.StatusInternalServerError)
+		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 
 	var nMap map[string]interface{}
 	err = json.Unmarshal(b, &nMap)
 	if err != nil {
-		c.AbortWithStatus(http.StatusInternalServerError)
+		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 

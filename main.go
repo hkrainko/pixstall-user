@@ -117,6 +117,9 @@ func main() {
 		userGroup.GET("/:id", func(c *gin.Context) {
 			if strings.HasSuffix(c.Request.RequestURI, "/me") {
 				userIDExtractor.ExtractPayloadsFromJWT(c)
+				if c.IsAborted() {
+					return
+				}
 				ctr.GetUserDetails(c)
 				return
 			}
