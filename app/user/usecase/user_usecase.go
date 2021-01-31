@@ -30,7 +30,7 @@ func (u userUseCase) GetUser(ctx context.Context, userID string) (*model.User, e
 	return dUser, nil
 }
 
-func (u userUseCase) GetUserDetails(ctx context.Context, userID string) (*model.UserDetails, error) {
+func (u userUseCase) GetAuthUser(ctx context.Context, userID string) (*model.AuthUser, error) {
 	dUser, err := u.userRepo.GetUserDetails(ctx, userID)
 	if err != nil {
 		return nil, err
@@ -39,7 +39,7 @@ func (u userUseCase) GetUserDetails(ctx context.Context, userID string) (*model.
 	if err != nil {
 		return nil, err
 	}
-	dUserDetails := model.UserDetails{
+	dUserDetails := model.AuthUser{
 		APIToken: apiToken,
 		User: *dUser,
 	}

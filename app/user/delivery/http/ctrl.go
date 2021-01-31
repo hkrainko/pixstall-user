@@ -42,7 +42,7 @@ func (u UserController) GetUserDetails(c *gin.Context) {
 		c.JSON(get_user_details.NewErrorResponse(errors.New("userID format invalid")))
 		return
 	}
-	dUser, err := u.userUseCase.GetUserDetails(c, tokenUserID)
+	dUser, err := u.userUseCase.GetAuthUser(c, tokenUserID)
 	if err != nil {
 		c.JSON(get_user_details.NewErrorResponse(err))
 		return

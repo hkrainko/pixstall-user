@@ -19,7 +19,7 @@ type SuccessResponse struct {
 	State      string `json:"state"`
 }
 
-func NewSuccessResponse(user *model.UserDetails) (int, *SuccessResponse) {
+func NewSuccessResponse(user *model.AuthUser) (int, *SuccessResponse) {
 	return http.StatusOK, &SuccessResponse{
 		AuthID:     user.AuthID,
 		UserID:     user.UserID,
