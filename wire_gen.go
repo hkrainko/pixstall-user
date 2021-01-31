@@ -47,7 +47,8 @@ func InitRegController(grpcConn *grpc.ClientConn, db *mongo.Database, ch *amqp.C
 func InitUserController(grpcConn *grpc.ClientConn, db *mongo.Database, awsS3 *s3.S3) http3.UserController {
 	repo := mongo2.NewMongoUserRepo(db)
 	imageRepo := aws_s3.NewAWSS3ImageRepository(awsS3)
-	useCase := usecase3.NewUserUseCase(repo, imageRepo)
+	tokenRepo := kong_jwt.NewKongJWTTokenRepo()
+	useCase := usecase3.NewUserUseCase(repo, imageRepo, tokenRepo)
 	userController := http3.NewUserController(useCase)
 	return userController
 }

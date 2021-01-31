@@ -50,6 +50,7 @@ func InitUserController(grpcConn *grpc.ClientConn, db *mongo.Database, awsS3 *s3
 		user_ucase.NewUserUseCase,
 		user_repo.NewMongoUserRepo,
 		image_repo.NewAWSS3ImageRepository,
+		token_repo.NewKongJWTTokenRepo,
 	)
 	return user_deliv.UserController{}
 }

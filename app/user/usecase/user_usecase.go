@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"pixstall-user/domain/image"
+	"pixstall-user/domain/token"
 	"pixstall-user/domain/user"
 	"pixstall-user/domain/user/model"
 )
@@ -10,12 +11,14 @@ import (
 type userUseCase struct {
 	userRepo user.Repo
 	imageRepo image.Repo
+	tokenRepo token.Repo
 }
 
-func NewUserUseCase(userRepo user.Repo, imageRepo image.Repo) user.UseCase {
+func NewUserUseCase(userRepo user.Repo, imageRepo image.Repo, tokenRepo token.Repo) user.UseCase {
 	return &userUseCase{
 		userRepo: userRepo,
 		imageRepo: imageRepo,
+		tokenRepo: tokenRepo,
 	}
 }
 
@@ -27,12 +30,20 @@ func (u userUseCase) GetUser(ctx context.Context, userID string) (*model.User, e
 	return dUser, nil
 }
 
-func (u userUseCase) GetUserDetails(ctx context.Context, userID string) (*model.User, error) {
+func (u userUseCase) GetUserDetails(ctx context.Context, userID string) (*model.UserDetails, error) {
 	dUser, err := u.userRepo.GetUserDetails(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
-	return dUser, nil
+	apiToken, err := u.tokenRepo.GenerateAPIToken(ctx, dUser.UserID)
+	if err != nil {
+		return nil, err
+	}
+	dUserDetails := model.UserDetails{
+		APIToken: apiToken,
+		User: *dUser,
+	}
+	return &dUserDetails, nil
 }
 
 func (u userUseCase) UpdateUser(ctx context.Context, updater *model.UserUpdater) (*model.User, error) {
