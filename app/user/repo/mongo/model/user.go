@@ -6,22 +6,25 @@ import (
 	commissionModel "pixstall-user/domain/commission/model"
 	indexModel "pixstall-user/domain/inbox/model"
 	"pixstall-user/domain/user/model"
+	"time"
 )
 
 type User struct {
-	ObjectID    primitive.ObjectID         `bson:"_id,omitempty"`
-	UserID      string                     `bson:"userId,omitempty"`
-	AuthID      string                     `bson:"authId,omitempty"`
-	UserName    string                     `bson:"userName,omitempty"`
-	AuthType    string                     `bson:"authType,omitempty"`
-	Email       string                     `bson:"email,omitempty"`
-	Birthday    string                     `bson:"birthday,omitempty"`
-	Gender      string                     `bson:"gender,omitempty"`
-	ProfilePath string                     `bson:"profilePath,omitempty"`
-	IsArtist    bool                       `bson:"isArtist"`
-	State       model.UserState            `bson:"state,omitempty"`
-	Inbox       indexModel.Inbox           `bson:"inbox,omitempty"`
-	Commission  commissionModel.Commission `bson:"commission,omitempty"`
+	ObjectID         primitive.ObjectID         `bson:"_id,omitempty"`
+	UserID           string                     `bson:"userId,omitempty"`
+	AuthID           string                     `bson:"authId,omitempty"`
+	UserName         string                     `bson:"userName,omitempty"`
+	AuthType         string                     `bson:"authType,omitempty"`
+	Email            string                     `bson:"email,omitempty"`
+	Birthday         string                     `bson:"birthday,omitempty"`
+	Gender           string                     `bson:"gender,omitempty"`
+	ProfilePath      string                     `bson:"profilePath,omitempty"`
+	IsArtist         bool                       `bson:"isArtist"`
+	State            model.UserState            `bson:"state,omitempty"`
+	Inbox            indexModel.Inbox           `bson:"inbox,omitempty"`
+	Commission       commissionModel.Commission `bson:"commission,omitempty"`
+	RegistrationTime time.Time                  `bson:"registrationTime,omitempty"`
+	LastUpdateTime   time.Time                  `bson:"regTime,omitempty"`
 }
 
 func (u *User) ToDomainUser() *model.User {
