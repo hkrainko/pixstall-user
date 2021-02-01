@@ -24,7 +24,7 @@ type User struct {
 	Inbox            indexModel.Inbox           `bson:"inbox,omitempty"`
 	Commission       commissionModel.Commission `bson:"commission,omitempty"`
 	RegistrationTime time.Time                  `bson:"registrationTime,omitempty"`
-	LastUpdateTime   time.Time                  `bson:"regTime,omitempty"`
+	LastUpdatedTime  time.Time                  `bson:"lastUpdatedTime,omitempty"`
 }
 
 func (u *User) ToDomainUser() *model.User {
