@@ -7,8 +7,8 @@ import (
 )
 
 type MsgBroker interface {
-	SendRegisterArtistMsg(ctx context.Context, info *domainRegModel.RegInfo) error
+	SendRegisterArtistMsg(ctx context.Context, info *domainRegModel.RegInfo, profilePath string) error
 	SendArtistUpdateMsg(ctx context.Context, updater *domainUserModel.UserUpdater) error
-	SendRegisterUserMsg(ctx context.Context, info *domainRegModel.RegInfo) error
+	SendRegisterUserMsg(ctx context.Context, info *domainRegModel.RegInfo, profilePath string) error
 	SendUserUpdateMsg(ctx context.Context, updater *domainUserModel.UserUpdater) error
 }

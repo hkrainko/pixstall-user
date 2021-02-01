@@ -11,7 +11,6 @@ type RegInfo struct {
 	Email          string             `json:"email"`
 	Birthday       string             `json:"birthday"`
 	Gender         string             `json:"gender"`
-	ProfilePath    string             `json:"profilePath"`
 	RegAsArtist    bool               `json:"regAsArtist"`
 	RegArtistIntro model2.ArtistIntro `json:"regArtistIntro"`
 }

@@ -56,20 +56,18 @@ func teardown() {
 
 func TestRabbitMQUserMsgBroker_SendRegisterArtistMsg(t *testing.T) {
 	err := userMsgBroker.SendRegisterArtistMsg(ctx, &model.RegInfo{
-		AuthID:        "123",
-		UserID:        "123",
-		DisplayName:   "1231",
-		Email:         "helloTest",
-		Birthday:      "20102020",
-		Gender:        "M",
-		ProfilePath:   "test/path",
-		RegAsArtist:   true,
+		AuthID:      "123",
+		UserID:      "123",
+		DisplayName: "1231",
+		Email:       "helloTest",
+		Birthday:    "20102020",
+		Gender:      "M",
+		RegAsArtist: true,
 		RegArtistIntro: model2.ArtistIntro{
 			YearOfDrawing: nil,
 			ArtTypes:      nil,
-			SelfIntro:     nil,
 		},
-	})
+	}, "test/path")
 	assert.NoError(t, err)
 }
 
@@ -77,20 +75,18 @@ func TestRabbitMQUserMsgBroker_SendRegisterArtistMsg_repeat(t *testing.T) {
 
 	for i := 0; i < 10; i++ {
 		err := userMsgBroker.SendRegisterArtistMsg(ctx, &model.RegInfo{
-			AuthID:        "123",
-			UserID:        "123",
-			DisplayName:   "1231",
-			Email:         "helloTest",
-			Birthday:      "20102020",
-			Gender:        "M",
-			ProfilePath:   "test/path",
-			RegAsArtist:   true,
+			AuthID:      "123",
+			UserID:      "123",
+			DisplayName: "1231",
+			Email:       "helloTest",
+			Birthday:    "20102020",
+			Gender:      "M",
+			RegAsArtist: true,
 			RegArtistIntro: model2.ArtistIntro{
 				YearOfDrawing: nil,
 				ArtTypes:      nil,
-				SelfIntro:     nil,
 			},
-		})
+		}, "test/path")
 		assert.NoError(t, err)
 	}
 }

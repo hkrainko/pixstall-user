@@ -6,11 +6,13 @@ import (
 
 type RegInfo struct {
 	*model.RegInfo
+	ProfilePath string `json:"profilePath"`
 }
 
-func NewRegInfoFromDomainRegInfo(dRegInfo *model.RegInfo) *RegInfo {
+func NewRegInfoFromDomainRegInfo(dRegInfo *model.RegInfo, ProfilePath string) *RegInfo {
 	return &RegInfo{
 		dRegInfo,
+		ProfilePath,
 	}
 }
 

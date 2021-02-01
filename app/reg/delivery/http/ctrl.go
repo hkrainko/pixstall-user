@@ -79,7 +79,6 @@ func (r RegController) Registration(c *gin.Context) {
 		RegArtistIntro: model2.ArtistIntro{
 			YearOfDrawing: &yearOfDrawing,
 			ArtTypes:      &artTypes,
-			SelfIntro:     nil,
 		},
 	}
 	apiToken, err := r.regUseCase.Registration(c, &regInfo, pngImage)

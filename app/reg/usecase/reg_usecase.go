@@ -96,13 +96,13 @@ func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo, pngIm
 	}
 
 	if info.RegAsArtist {
-		err := r.userMsgBroker.SendRegisterArtistMsg(ctx, info)
+		err := r.userMsgBroker.SendRegisterArtistMsg(ctx, info, profilePath)
 		//not return err
 		if err != nil {
 			log.Printf("SendRegisterArtistMsg err %v", err)
 		}
 	} else {
-		err := r.userMsgBroker.SendRegisterUserMsg(ctx, info)
+		err := r.userMsgBroker.SendRegisterUserMsg(ctx, info, profilePath)
 		//not return err
 		if err != nil {
 			log.Printf("SendRegisterUserMsg err %v", err)

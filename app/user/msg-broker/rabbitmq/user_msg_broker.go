@@ -20,8 +20,8 @@ func NewRabbitMQUserMsgBroker(ch *amqp.Channel) user.MsgBroker {
 	}
 }
 
-func (r *rabbitMQUserMsgBroker) SendRegisterArtistMsg(ctx context.Context, info *model.RegInfo) error {
-	b, err := json.Marshal(msgBrokerModel.NewRegInfoFromDomainRegInfo(info))
+func (r *rabbitMQUserMsgBroker) SendRegisterArtistMsg(ctx context.Context, info *model.RegInfo, profilePath string) error {
+	b, err := json.Marshal(msgBrokerModel.NewRegInfoFromDomainRegInfo(info, profilePath))
 	if err != nil {
 		return err
 	}
@@ -62,8 +62,8 @@ func (r *rabbitMQUserMsgBroker) SendArtistUpdateMsg(ctx context.Context, updater
 	return nil
 }
 
-func (r *rabbitMQUserMsgBroker) SendRegisterUserMsg(ctx context.Context, info *model.RegInfo) error {
-	b, err := json.Marshal(msgBrokerModel.NewRegInfoFromDomainRegInfo(info))
+func (r *rabbitMQUserMsgBroker) SendRegisterUserMsg(ctx context.Context, info *model.RegInfo, profilePath string) error {
+	b, err := json.Marshal(msgBrokerModel.NewRegInfoFromDomainRegInfo(info, profilePath))
 	if err != nil {
 		return err
 	}
