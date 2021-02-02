@@ -13,6 +13,7 @@ import (
 	"pixstall-user/domain/user"
 	userModel "pixstall-user/domain/user/model"
 	"strings"
+	"time"
 )
 
 type regUseCase struct {
@@ -31,7 +32,7 @@ func NewRegUseCase(userRepo user.Repo, userMsgBroker user.MsgBroker, imageRepo d
 	}
 }
 
-func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo, pngImage image.Image) (string, error) {
+func (r regUseCase) Registration(ctx context.Context, info model.RegInfo, pngImage image.Image) (string, error) {
 
 	//Check if authUser exist and in pending state
 	extUser, err := r.userRepo.GetUserByAuthID(ctx, info.AuthID)
@@ -52,31 +53,10 @@ func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo, pngIm
 	}
 
 	//Upload image
-	profilePath := func() string {
-		if pngImage == nil {
-			return ""
-		}
-		newUUID, err := uuid.NewRandom()
-		if err != nil {
-			log.Println(err)
-			return ""
-		}
-		fileName := newUUID.String()
-		fileName = strings.ReplaceAll(fileName, "-", "")
-		fileName = info.UserID + "_" + fileName
-		//TODO: put profile path into other place
-		path := "profile/"
-		err = r.imageRepo.SaveImage(ctx, path, fileName+"_50", utils.ResizeImage(pngImage, 50, 50))
-		if err != nil {
-			log.Println(err)
-			return ""
-		}
-		err = r.imageRepo.SaveImage(ctx, path, fileName, utils.ResizeImage(pngImage, 180, 180))
-		if err != nil {
-			return ""
-		}
-		return path + fileName
-	}()
+	profilePath := r.uploadProfileImage(ctx, info.UserID, pngImage)
+
+	info.ProfilePath = profilePath
+	info.RegTime = time.Now()
 
 	state := userModel.UserStateActive
 	updater := userModel.UserUpdater{
@@ -88,6 +68,7 @@ func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo, pngIm
 		ProfilePath: &profilePath,
 		State:       &state,
 		IsArtist:    &info.RegAsArtist,
+		RegTime:     &info.RegTime,
 	}
 
 	err = r.userRepo.UpdateUserByAuthID(ctx, info.AuthID, &updater)
@@ -96,13 +77,13 @@ func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo, pngIm
 	}
 
 	if info.RegAsArtist {
-		err := r.userMsgBroker.SendRegisterArtistMsg(ctx, info, profilePath)
+		err := r.userMsgBroker.SendRegisterArtistMsg(ctx, &info)
 		//not return err
 		if err != nil {
 			log.Printf("SendRegisterArtistMsg err %v", err)
 		}
 	} else {
-		err := r.userMsgBroker.SendRegisterUserMsg(ctx, info, profilePath)
+		err := r.userMsgBroker.SendRegisterUserMsg(ctx, &info)
 		//not return err
 		if err != nil {
 			log.Printf("SendRegisterUserMsg err %v", err)
@@ -115,4 +96,30 @@ func (r regUseCase) Registration(ctx context.Context, info *model.RegInfo, pngIm
 	}
 
 	return apiToken, nil
+}
+
+func (r regUseCase) uploadProfileImage(ctx context.Context, userID string, pngImage image.Image) string {
+	if pngImage == nil {
+		return ""
+	}
+	newUUID, err := uuid.NewRandom()
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+	fileName := newUUID.String()
+	fileName = strings.ReplaceAll(fileName, "-", "")
+	fileName = userID + "_" + fileName
+	//TODO: put profile path into other place
+	path := "profile/"
+	err = r.imageRepo.SaveImage(ctx, path, fileName+"_50", utils.ResizeImage(pngImage, 50, 50))
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+	err = r.imageRepo.SaveImage(ctx, path, fileName, utils.ResizeImage(pngImage, 180, 180))
+	if err != nil {
+		return ""
+	}
+	return path + fileName
 }

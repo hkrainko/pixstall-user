@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 type UserUpdater struct {
 	UserID      string
 	UserName    *string
@@ -9,4 +11,5 @@ type UserUpdater struct {
 	ProfilePath *string
 	State       *UserState
 	IsArtist    *bool
+	RegTime     *time.Time
 }

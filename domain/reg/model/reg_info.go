@@ -2,6 +2,7 @@ package model
 
 import (
 	model2 "pixstall-user/domain/artist/model"
+	"time"
 )
 
 type RegInfo struct {
@@ -11,6 +12,8 @@ type RegInfo struct {
 	Email          string             `json:"email"`
 	Birthday       string             `json:"birthday"`
 	Gender         string             `json:"gender"`
+	ProfilePath    string             `json:"profilePath"`
 	RegAsArtist    bool               `json:"regAsArtist"`
 	RegArtistIntro model2.ArtistIntro `json:"regArtistIntro"`
+	RegTime        time.Time          `json:"regTime"`
 }

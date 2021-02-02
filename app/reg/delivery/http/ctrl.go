@@ -81,7 +81,7 @@ func (r RegController) Registration(c *gin.Context) {
 			ArtTypes:      &artTypes,
 		},
 	}
-	apiToken, err := r.regUseCase.Registration(c, &regInfo, pngImage)
+	apiToken, err := r.regUseCase.Registration(c, regInfo, pngImage)
 	if err != nil {
 		c.JSON(register.NewErrorResponse(err))
 		return

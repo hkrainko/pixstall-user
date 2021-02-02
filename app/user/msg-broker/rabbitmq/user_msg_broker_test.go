@@ -62,12 +62,13 @@ func TestRabbitMQUserMsgBroker_SendRegisterArtistMsg(t *testing.T) {
 		Email:       "helloTest",
 		Birthday:    "20102020",
 		Gender:      "M",
+		ProfilePath: "test/path",
 		RegAsArtist: true,
 		RegArtistIntro: model2.ArtistIntro{
 			YearOfDrawing: nil,
 			ArtTypes:      nil,
 		},
-	}, "test/path")
+	})
 	assert.NoError(t, err)
 }
 
@@ -81,12 +82,13 @@ func TestRabbitMQUserMsgBroker_SendRegisterArtistMsg_repeat(t *testing.T) {
 			Email:       "helloTest",
 			Birthday:    "20102020",
 			Gender:      "M",
+			ProfilePath: "test/path",
 			RegAsArtist: true,
 			RegArtistIntro: model2.ArtistIntro{
 				YearOfDrawing: nil,
 				ArtTypes:      nil,
 			},
-		}, "test/path")
+		})
 		assert.NoError(t, err)
 	}
 }

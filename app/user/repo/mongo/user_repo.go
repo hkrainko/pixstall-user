@@ -11,6 +11,7 @@ import (
 	authModel "pixstall-user/domain/auth/model"
 	"pixstall-user/domain/user"
 	userModel "pixstall-user/domain/user/model"
+	"time"
 )
 
 type mongoUserRepo struct {
@@ -74,6 +75,10 @@ func (m mongoUserRepo) UpdateUser(ctx context.Context, userID string, updater *u
 	if updater.IsArtist != nil {
 		update["isArtist"] = updater.IsArtist
 	}
+	if updater.RegTime != nil {
+		update["regTime"] = updater.RegTime
+	}
+	update["lastUpdatedTime"] = time.Now()
 
 	result, err := collection.UpdateOne(ctx, filter, bson.M{"$set": update})
 
@@ -116,6 +121,10 @@ func (m mongoUserRepo) UpdateUserByAuthID(ctx context.Context, authID string, up
 	if updater.IsArtist != nil {
 		update["isArtist"] = updater.IsArtist
 	}
+	if updater.RegTime != nil {
+		update["regTime"] = updater.RegTime
+	}
+	update["lastUpdatedTime"] = time.Now()
 
 	result, err := collection.UpdateOne(ctx, filter, bson.M{"$set": update})
 
