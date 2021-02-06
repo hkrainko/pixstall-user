@@ -6,31 +6,31 @@ import (
 )
 
 type SuccessResponse struct {
-	AuthID     string `json:"authId"`
-	UserID     string `json:"userId"`
-	UserName   string `json:"userName"`
-	AuthType   string `json:"authType"`
-	APIToken   string `json:"apiToken"`
-	Email      string `json:"email"`
-	Birthday   string `json:"birthday"`
-	Gender     string `json:"gender"`
-	ProfileURL string `json:"profileUrl"`
-	IsArtist   bool   `json:"isArtist"`
-	State      string `json:"state"`
+	AuthID      string `json:"authId"`
+	UserID      string `json:"userId"`
+	UserName    string `json:"userName"`
+	AuthType    string `json:"authType"`
+	APIToken    string `json:"apiToken"`
+	Email       string `json:"email"`
+	Birthday    string `json:"birthday"`
+	Gender      string `json:"gender"`
+	ProfilePath string `json:"profilePath"`
+	IsArtist    bool   `json:"isArtist"`
+	State       string `json:"state"`
 }
 
 func NewSuccessResponse(user *model.AuthUser) (int, *SuccessResponse) {
 	return http.StatusOK, &SuccessResponse{
-		AuthID:     user.AuthID,
-		UserID:     user.UserID,
-		UserName:   user.UserName,
-		AuthType:   user.AuthType,
-		APIToken:   user.APIToken,
-		Email:      user.Email,
-		Birthday:   user.Birthday,
-		Gender:     user.Gender,
-		ProfileURL: user.ProfilePath,
-		IsArtist:   user.IsArtist,
-		State:      string(user.State),
+		AuthID:      user.AuthID,
+		UserID:      user.UserID,
+		UserName:    user.UserName,
+		AuthType:    user.AuthType,
+		APIToken:    user.APIToken,
+		Email:       user.Email,
+		Birthday:    user.Birthday,
+		Gender:      user.Gender,
+		ProfilePath: user.ProfilePath,
+		IsArtist:    user.IsArtist,
+		State:       string(user.State),
 	}
 }
