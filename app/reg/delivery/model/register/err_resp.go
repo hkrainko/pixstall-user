@@ -2,7 +2,7 @@ package register
 
 import (
 	"net/http"
-	"pixstall-user/domain/user/model"
+	model2 "pixstall-user/domain/reg/model"
 )
 
 type ErrorResponse struct {
@@ -10,15 +10,15 @@ type ErrorResponse struct {
 }
 
 func NewErrorResponse(err error) (int, interface{}) {
-	if userError, isError := err.(model.UserError); isError {
-		switch userError {
-		case model.UserErrorDuplicateUser:
+	if regError, isError := err.(model2.RegError); isError {
+		switch regError {
+		case model2.RegErrorDuplicateUser:
 			return http.StatusConflict, ErrorResponse{
-				Message: userError.Error(),
+				Message: regError.Error(),
 			}
-		case model.UserErrorAuthIDAlreadyRegister:
-			return http.StatusConflict, ErrorResponse{
-				Message: userError.Error(),
+		case model2.RegErrorAuthIDAlreadyRegister:
+			return http.StatusForbidden, ErrorResponse{
+				Message: regError.Error(),
 			}
 		default:
 			return http.StatusInternalServerError, ErrorResponse{

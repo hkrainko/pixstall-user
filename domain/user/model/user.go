@@ -11,7 +11,6 @@ type User struct {
 	AuthID          string
 	UserName        string
 	AuthType        string
-	Token           string
 	Email           string
 	Birthday        string
 	Gender          string

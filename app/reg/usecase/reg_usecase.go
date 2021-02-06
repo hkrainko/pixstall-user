@@ -32,24 +32,24 @@ func NewRegUseCase(userRepo user.Repo, userMsgBroker user.MsgBroker, imageRepo d
 	}
 }
 
-func (r regUseCase) Registration(ctx context.Context, info model.RegInfo, pngImage image.Image) (string, error) {
+func (r regUseCase) Registration(ctx context.Context, info model.RegInfo, pngImage image.Image) (*userModel.AuthUser, error) {
 
 	//Check if authUser exist and in pending state
 	extUser, err := r.userRepo.GetUserByAuthID(ctx, info.AuthID)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if extUser.State != userModel.UserStatePending {
-		return "", userModel.UserErrorAuthIDAlreadyRegister
+		return nil, model.RegErrorAuthIDAlreadyRegister
 	}
 
 	//Check if userId exist
 	exist, err := r.userRepo.IsUserExist(ctx, info.UserID)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if *exist {
-		return "", userModel.UserErrorDuplicateUser
+		return nil, model.RegErrorDuplicateUser
 	}
 
 	//Upload image
@@ -73,7 +73,7 @@ func (r regUseCase) Registration(ctx context.Context, info model.RegInfo, pngIma
 
 	err = r.userRepo.UpdateUserByAuthID(ctx, info.AuthID, &updater)
 	if err != nil {
-		return "", err
+		return nil, model.RegErrorUnknown
 	}
 
 	if info.RegAsArtist {
@@ -90,12 +90,23 @@ func (r regUseCase) Registration(ctx context.Context, info model.RegInfo, pngIma
 		}
 	}
 
+	dUser, err := r.userRepo.GetUserDetails(ctx, info.UserID)
+	if err != nil {
+		log.Println(err)
+		return nil, model.RegErrorUnknown
+	}
 	apiToken, err := r.tokenRepo.GenerateAPIToken(ctx, info.UserID)
 	if err != nil {
 		log.Println(err)
+		return nil, model.RegErrorUnknown
 	}
 
-	return apiToken, nil
+	dAuthUser := userModel.AuthUser{
+		APIToken: apiToken,
+		User:     *dUser,
+	}
+
+	return &dAuthUser, nil
 }
 
 func (r regUseCase) uploadProfileImage(ctx context.Context, userID string, pngImage image.Image) string {
