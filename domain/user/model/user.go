@@ -7,19 +7,19 @@ import (
 )
 
 type User struct {
-	UserID          string
-	AuthID          string
-	UserName        string
-	AuthType        string
-	Email           string
-	Birthday        string
-	Gender          string
-	ProfilePath     string
-	IsArtist        bool
-	State           UserState
+	UserID          string    `json:"userId"`
+	AuthID          string    `json:"authId,omitempty"`
+	UserName        string    `json:"userName"`
+	AuthType        string    `json:"authType,omitempty"`
+	Email           string    `json:"email"`
+	Birthday        string    `json:"birthday"`
+	Gender          string    `json:"gender"`
+	ProfilePath     string    `json:"profilePath"`
+	IsArtist        bool      `json:"isArtist"`
+	State           UserState `json:"state"`
 	Inbox           indexModel.Inbox
 	Commission      commissionModel.Commission
-	RegTime         time.Time
+	RegTime         time.Time `json:"regTime"`
 	LastUpdatedTime time.Time
 }
 

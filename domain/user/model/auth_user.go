@@ -1,6 +1,6 @@
 package model
 
 type AuthUser struct {
-	APIToken string
+	APIToken string `json:"apiToken"`
 	User
 }
