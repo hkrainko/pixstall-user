@@ -35,9 +35,11 @@ func (r RegController) Registration(c *gin.Context) {
 	var yearOfDrawing int
 	var artTypes []string
 	if regAsArtist == "Y" {
-		i, err := strconv.Atoi(c.PostForm("yearOfDrawing"))
-		if err != nil {
-			yearOfDrawing = i
+		if yearOfDrawingStr, exist := c.GetPostForm("yearOfDrawing"); exist {
+			i, err := strconv.Atoi(yearOfDrawingStr)
+			if err == nil {
+				yearOfDrawing = i
+			}
 		}
 		artTypes = c.PostFormArray("artTypes")
 	}
@@ -77,8 +79,8 @@ func (r RegController) Registration(c *gin.Context) {
 			return false
 		}(),
 		RegArtistIntro: model2.ArtistIntro{
-			YearOfDrawing: &yearOfDrawing,
-			ArtTypes:      &artTypes,
+			YearOfDrawing: yearOfDrawing,
+			ArtTypes:      artTypes,
 		},
 	}
 	authUser, err := r.regUseCase.Registration(c, regInfo, pngImage)
