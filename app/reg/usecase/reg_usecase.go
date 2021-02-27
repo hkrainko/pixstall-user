@@ -7,6 +7,7 @@ import (
 	"log"
 	"pixstall-user/app/utils"
 	domainImage "pixstall-user/domain/image"
+	msgBroker "pixstall-user/domain/msg-broker"
 	"pixstall-user/domain/reg"
 	"pixstall-user/domain/reg/model"
 	"pixstall-user/domain/token"
@@ -17,18 +18,18 @@ import (
 )
 
 type regUseCase struct {
-	userRepo      user.Repo
-	userMsgBroker user.MsgBroker
-	imageRepo     domainImage.Repo
-	tokenRepo     token.Repo
+	userRepo  user.Repo
+	msgBroker msgBroker.Repo
+	imageRepo domainImage.Repo
+	tokenRepo token.Repo
 }
 
-func NewRegUseCase(userRepo user.Repo, userMsgBroker user.MsgBroker, imageRepo domainImage.Repo, tokenRepo token.Repo) reg.UseCase {
+func NewRegUseCase(userRepo user.Repo, msgBroker msgBroker.Repo, imageRepo domainImage.Repo, tokenRepo token.Repo) reg.UseCase {
 	return &regUseCase{
-		userRepo:      userRepo,
-		userMsgBroker: userMsgBroker,
-		imageRepo:     imageRepo,
-		tokenRepo:     tokenRepo,
+		userRepo:  userRepo,
+		msgBroker: msgBroker,
+		imageRepo: imageRepo,
+		tokenRepo: tokenRepo,
 	}
 }
 
@@ -77,16 +78,10 @@ func (r regUseCase) Registration(ctx context.Context, info model.RegInfo, pngIma
 	}
 
 	if info.RegAsArtist {
-		err := r.userMsgBroker.SendRegisterArtistMsg(ctx, &info)
+		err := r.msgBroker.SendRegisterArtistMsg(ctx, &info)
 		//not return err
 		if err != nil {
 			log.Printf("SendRegisterArtistMsg err %v", err)
-		}
-	} else {
-		err := r.userMsgBroker.SendRegisterUserMsg(ctx, &info)
-		//not return err
-		if err != nil {
-			log.Printf("SendRegisterUserMsg err %v", err)
 		}
 	}
 

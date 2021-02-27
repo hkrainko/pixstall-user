@@ -11,14 +11,16 @@ import (
 	auth_deliv "pixstall-user/app/auth/delivery/http"
 	auth_repo "pixstall-user/app/auth/repo/grpc"
 	auth_ucase "pixstall-user/app/auth/usecase"
+	comm_ucase "pixstall-user/app/commission/usercase"
+	comm_deliv_rabbitmq "pixstall-user/app/commission/delivery/rabbitmq"
 	image_repo "pixstall-user/app/image/aws-s3"
 	reg_deliv "pixstall-user/app/reg/delivery/http"
 	reg_ucase "pixstall-user/app/reg/usecase"
 	token_repo "pixstall-user/app/token/repo/kong-jwt"
 	user_deliv "pixstall-user/app/user/delivery/http"
-	user_msg_broker "pixstall-user/app/user/msg-broker/rabbitmq"
 	user_repo "pixstall-user/app/user/repo/mongo"
 	user_ucase "pixstall-user/app/user/usecase"
+	msg_broker_repo "pixstall-user/app/msg-broker/repo/rabbitmq"
 )
 
 func InitAuthController(grpcConn *grpc.ClientConn, db *mongo.Database) auth_deliv.AuthController {
@@ -32,12 +34,12 @@ func InitAuthController(grpcConn *grpc.ClientConn, db *mongo.Database) auth_deli
 	return auth_deliv.AuthController{}
 }
 
-func InitRegController(grpcConn *grpc.ClientConn, db *mongo.Database, ch *amqp.Channel, awsS3 *s3.S3) reg_deliv.RegController {
+func InitRegController(grpcConn *grpc.ClientConn, db *mongo.Database, ch *amqp.Channel, awsS3 *s3.S3, conn *amqp.Connection) reg_deliv.RegController {
 	wire.Build(
 		reg_deliv.NewRegController,
 		user_repo.NewMongoUserRepo,
 		reg_ucase.NewRegUseCase,
-		user_msg_broker.NewRabbitMQUserMsgBroker,
+		msg_broker_repo.NewRabbitMQMsgBrokerRepo,
 		image_repo.NewAWSS3ImageRepository,
 		token_repo.NewKongJWTTokenRepo,
 	)
@@ -53,4 +55,14 @@ func InitUserController(grpcConn *grpc.ClientConn, db *mongo.Database, awsS3 *s3
 		token_repo.NewKongJWTTokenRepo,
 	)
 	return user_deliv.UserController{}
+}
+
+func InitCommissionMessageBroker(db *mongo.Database, conn *amqp.Connection) comm_deliv_rabbitmq.CommissionMessageBroker {
+	wire.Build(
+		comm_deliv_rabbitmq.NewRabbitMQCommissionMessageBroker,
+		comm_ucase.NewCommissionUseCase,
+		msg_broker_repo.NewRabbitMQMsgBrokerRepo,
+		user_repo.NewMongoUserRepo,
+		)
+	return comm_deliv_rabbitmq.CommissionMessageBroker{}
 }

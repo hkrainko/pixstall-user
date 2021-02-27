@@ -50,6 +50,7 @@ func main() {
 			panic(err)
 		}
 	}()
+	db := dbClient.Database("pixstall-user")
 
 	//RabbitMQ
 	rabbitmqConn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
@@ -73,6 +74,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to create exchange %v", err)
 	}
+
+	commMsgBroker := InitCommissionMessageBroker(db, rabbitmqConn)
+	go commMsgBroker.StartCommUsersValidateQueue()
+	defer commMsgBroker.StopAllQueue()
 
 	//gRPC
 	grpcConn, err := grpc.Dial("localhost:50051", grpc.WithInsecure(), grpc.WithBlock())
@@ -98,7 +103,7 @@ func main() {
 
 	authGroup := apiGroup.Group("/auth")
 	{
-		ctr := InitAuthController(grpcConn, dbClient.Database("pixstall-user"))
+		ctr := InitAuthController(grpcConn, db)
 		authGroup.GET("/url", ctr.GetAuthURL)
 		authGroup.GET("/callback", ctr.AuthCallback)
 	}
@@ -106,14 +111,14 @@ func main() {
 	regGroup := apiGroup.Group("/reg")
 	{
 		authIDExtractor := middleware.NewJWTPayloadsExtractor([]string{"authId"})
-		ctr := InitRegController(grpcConn, dbClient.Database("pixstall-user"), ch, awsS3)
+		ctr := InitRegController(grpcConn, db, ch, awsS3, rabbitmqConn)
 		regGroup.POST("/registration", authIDExtractor.ExtractPayloadsFromJWT, ctr.Registration)
 	}
 
 	userGroup := apiGroup.Group("/users")
 	{
 		userIDExtractor := middleware.NewJWTPayloadsExtractor([]string{"userId"})
-		ctr := InitUserController(grpcConn, dbClient.Database("pixstall-user"), awsS3)
+		ctr := InitUserController(grpcConn, db, awsS3)
 		userGroup.GET("/:id", func(c *gin.Context) {
 			if strings.HasSuffix(c.Request.RequestURI, "/me") {
 				userIDExtractor.ExtractPayloadsFromJWT(c)

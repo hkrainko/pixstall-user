@@ -1,4 +1,4 @@
-package model
+package msg
 
 import (
 	"pixstall-user/domain/reg/model"

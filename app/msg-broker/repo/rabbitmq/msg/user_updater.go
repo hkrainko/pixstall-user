@@ -1,4 +1,4 @@
-package model
+package msg
 
 import domainUserModel "pixstall-user/domain/user/model"
 

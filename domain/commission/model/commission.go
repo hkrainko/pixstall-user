@@ -1,6 +1,7 @@
 package model
 
 type Commission struct {
-	MessageCount int
-	LastMessage  string
+	ID          string `json:"id"`
+	ArtistID    string `json:"artistID"`
+	RequesterID string `json:"requesterID"`
 }

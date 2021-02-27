@@ -15,6 +15,7 @@ require (
 	github.com/stretchr/testify v1.6.1
 	go.mongodb.org/mongo-driver v1.4.3
 	golang.org/x/image v0.0.0-20201208152932-35266b937fa6 // indirect
+	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
 	google.golang.org/grpc v1.33.2
 	google.golang.org/protobuf v1.25.0
 )
