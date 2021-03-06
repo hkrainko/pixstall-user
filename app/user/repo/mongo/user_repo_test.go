@@ -238,8 +238,6 @@ func insertDummyUser(ctx context.Context, userId string, state model.UserState) 
 			},
 		},
 		Commission: model2.Commission{
-			MessageCount: 10,
-			LastMessage:  "Dummy_LastMessage",
 		},
 	}
 	result, err := c.InsertOne(ctx, &user)
