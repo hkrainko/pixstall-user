@@ -6,7 +6,6 @@
 package main
 
 import (
-	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc"
@@ -15,7 +14,7 @@ import (
 	"pixstall-user/app/auth/usecase"
 	rabbitmq2 "pixstall-user/app/commission/delivery/rabbitmq"
 	"pixstall-user/app/commission/usercase"
-	"pixstall-user/app/image/aws-s3"
+	"pixstall-user/app/file/repo"
 	"pixstall-user/app/msg-broker/repo/rabbitmq"
 	http2 "pixstall-user/app/reg/delivery/http"
 	usecase2 "pixstall-user/app/reg/usecase"
@@ -36,29 +35,29 @@ func InitAuthController(grpcConn *grpc.ClientConn, db *mongo.Database) http.Auth
 	return authController
 }
 
-func InitRegController(grpcConn *grpc.ClientConn, db *mongo.Database, ch *amqp.Channel, awsS3 *s3.S3, conn *amqp.Connection) http2.RegController {
-	repo := mongo2.NewMongoUserRepo(db)
+func InitRegController(grpcConn *grpc.ClientConn, fileGRPCConn *repo.FileGRPCClientConn, db *mongo.Database, ch *amqp.Channel, conn *amqp.Connection) http2.RegController {
+	userRepo := mongo2.NewMongoUserRepo(db)
 	msg_brokerRepo := rabbitmq.NewRabbitMQMsgBrokerRepo(conn)
-	imageRepo := aws_s3.NewAWSS3ImageRepository(awsS3)
+	fileRepo := repo.NewGRPCFileRepository(fileGRPCConn)
 	tokenRepo := kong_jwt.NewKongJWTTokenRepo()
-	useCase := usecase2.NewRegUseCase(repo, msg_brokerRepo, imageRepo, tokenRepo)
+	useCase := usecase2.NewRegUseCase(userRepo, msg_brokerRepo, fileRepo, tokenRepo)
 	regController := http2.NewRegController(useCase)
 	return regController
 }
 
-func InitUserController(grpcConn *grpc.ClientConn, db *mongo.Database, awsS3 *s3.S3) http3.UserController {
-	repo := mongo2.NewMongoUserRepo(db)
-	imageRepo := aws_s3.NewAWSS3ImageRepository(awsS3)
+func InitUserController(grpcConn *grpc.ClientConn, fileGRPCConn *repo.FileGRPCClientConn, db *mongo.Database) http3.UserController {
+	userRepo := mongo2.NewMongoUserRepo(db)
+	fileRepo := repo.NewGRPCFileRepository(fileGRPCConn)
 	tokenRepo := kong_jwt.NewKongJWTTokenRepo()
-	useCase := usecase3.NewUserUseCase(repo, imageRepo, tokenRepo)
+	useCase := usecase3.NewUserUseCase(userRepo, fileRepo, tokenRepo)
 	userController := http3.NewUserController(useCase)
 	return userController
 }
 
 func InitCommissionMessageBroker(db *mongo.Database, conn *amqp.Connection) rabbitmq2.CommissionMessageBroker {
-	repo := rabbitmq.NewRabbitMQMsgBrokerRepo(conn)
+	msg_brokerRepo := rabbitmq.NewRabbitMQMsgBrokerRepo(conn)
 	userRepo := mongo2.NewMongoUserRepo(db)
-	useCase := usercase.NewCommissionUseCase(repo, userRepo)
+	useCase := usercase.NewCommissionUseCase(msg_brokerRepo, userRepo)
 	commissionMessageBroker := rabbitmq2.NewRabbitMQCommissionMessageBroker(useCase, conn)
 	return commissionMessageBroker
 }

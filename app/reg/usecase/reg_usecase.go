@@ -2,38 +2,35 @@ package usecase
 
 import (
 	"context"
-	"github.com/google/uuid"
-	"image"
 	"log"
-	"pixstall-user/app/utils"
-	domainImage "pixstall-user/domain/image"
+	domainFile "pixstall-user/domain/file"
+	model2 "pixstall-user/domain/file/model"
 	msgBroker "pixstall-user/domain/msg-broker"
 	"pixstall-user/domain/reg"
 	"pixstall-user/domain/reg/model"
 	"pixstall-user/domain/token"
 	"pixstall-user/domain/user"
 	userModel "pixstall-user/domain/user/model"
-	"strings"
 	"time"
 )
 
 type regUseCase struct {
 	userRepo  user.Repo
 	msgBroker msgBroker.Repo
-	imageRepo domainImage.Repo
+	fileRepo domainFile.Repo
 	tokenRepo token.Repo
 }
 
-func NewRegUseCase(userRepo user.Repo, msgBroker msgBroker.Repo, imageRepo domainImage.Repo, tokenRepo token.Repo) reg.UseCase {
+func NewRegUseCase(userRepo user.Repo, msgBroker msgBroker.Repo, fileRepo domainFile.Repo, tokenRepo token.Repo) reg.UseCase {
 	return &regUseCase{
 		userRepo:  userRepo,
 		msgBroker: msgBroker,
-		imageRepo: imageRepo,
+		fileRepo: fileRepo,
 		tokenRepo: tokenRepo,
 	}
 }
 
-func (r regUseCase) Registration(ctx context.Context, info model.RegInfo, pngImage image.Image) (*userModel.AuthUser, error) {
+func (r regUseCase) Registration(ctx context.Context, info model.RegInfo, profile *model2.ImageFile) (*userModel.AuthUser, error) {
 
 	//Check if authUser exist and in pending state
 	extUser, err := r.userRepo.GetUserByAuthID(ctx, info.AuthID)
@@ -54,7 +51,10 @@ func (r regUseCase) Registration(ctx context.Context, info model.RegInfo, pngIma
 	}
 
 	//Upload image
-	profilePath := r.uploadProfileImage(ctx, info.UserID, pngImage)
+	var profilePath *string
+	if profile != nil {
+		profilePath, _ = r.fileRepo.SaveFile(ctx, profile.File, model2.FileTypeProfile, info.UserID, []string{"*"})
+	}
 
 	info.ProfilePath = profilePath
 	info.RegTime = time.Now()
@@ -66,7 +66,7 @@ func (r regUseCase) Registration(ctx context.Context, info model.RegInfo, pngIma
 		Email:       &info.Email,
 		Birthday:    &info.Birthday,
 		Gender:      &info.Gender,
-		ProfilePath: &profilePath,
+		ProfilePath: profilePath,
 		State:       &state,
 		IsArtist:    &info.RegAsArtist,
 		RegTime:     &info.RegTime,
@@ -102,30 +102,4 @@ func (r regUseCase) Registration(ctx context.Context, info model.RegInfo, pngIma
 	}
 
 	return &dAuthUser, nil
-}
-
-func (r regUseCase) uploadProfileImage(ctx context.Context, userID string, pngImage image.Image) string {
-	if pngImage == nil {
-		return ""
-	}
-	newUUID, err := uuid.NewRandom()
-	if err != nil {
-		log.Println(err)
-		return ""
-	}
-	fileName := newUUID.String()
-	fileName = strings.ReplaceAll(fileName, "-", "")
-	fileName = userID + "_" + fileName
-	//TODO: put profile path into other place
-	path := "profile/"
-	err = r.imageRepo.SaveImage(ctx, path, fileName+"_50", utils.ResizeImage(pngImage, 50, 50))
-	if err != nil {
-		log.Println(err)
-		return ""
-	}
-	err = r.imageRepo.SaveImage(ctx, path, fileName, utils.ResizeImage(pngImage, 180, 180))
-	if err != nil {
-		return ""
-	}
-	return path + fileName
 }

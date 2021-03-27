@@ -2,22 +2,22 @@ package usecase
 
 import (
 	"context"
-	"pixstall-user/domain/image"
+	"pixstall-user/domain/file"
 	"pixstall-user/domain/token"
 	"pixstall-user/domain/user"
 	"pixstall-user/domain/user/model"
 )
 
 type userUseCase struct {
-	userRepo user.Repo
-	imageRepo image.Repo
+	userRepo  user.Repo
+	fileRepo  file.Repo
 	tokenRepo token.Repo
 }
 
-func NewUserUseCase(userRepo user.Repo, imageRepo image.Repo, tokenRepo token.Repo) user.UseCase {
+func NewUserUseCase(userRepo user.Repo, fileRepo file.Repo, tokenRepo token.Repo) user.UseCase {
 	return &userUseCase{
-		userRepo: userRepo,
-		imageRepo: imageRepo,
+		userRepo:  userRepo,
+		fileRepo:  fileRepo,
 		tokenRepo: tokenRepo,
 	}
 }
