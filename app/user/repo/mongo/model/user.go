@@ -12,19 +12,19 @@ import (
 type User struct {
 	ObjectID        primitive.ObjectID         `bson:"_id,omitempty"`
 	UserID          string                     `bson:"userId,omitempty"`
-	AuthID          string                     `bson:"authId,omitempty"`
-	UserName        string                     `bson:"userName,omitempty"`
-	AuthType        string                     `bson:"authType,omitempty"`
-	Email           string                     `bson:"email,omitempty"`
-	Birthday        string                     `bson:"birthday,omitempty"`
-	Gender          string                     `bson:"gender,omitempty"`
-	ProfilePath     string                     `bson:"profilePath,omitempty"`
+	AuthID          string                     `bson:"authId"`
+	UserName        string                     `bson:"userName"`
+	AuthType        string                     `bson:"authType"`
+	Email           string                     `bson:"email"`
+	Birthday        string                     `bson:"birthday"`
+	Gender          string                     `bson:"gender"`
+	ProfilePath     string                     `bson:"profilePath"`
 	IsArtist        bool                       `bson:"isArtist"`
-	State           model.UserState            `bson:"state,omitempty"`
+	State           model.UserState            `bson:"state"`
 	Inbox           indexModel.Inbox           `bson:"inbox,omitempty"`
 	Commission      commissionModel.Commission `bson:"commission,omitempty"`
-	RegTime         time.Time                  `bson:"regTime,omitempty"`
-	LastUpdatedTime time.Time                  `bson:"lastUpdatedTime,omitempty"`
+	RegTime         time.Time                  `bson:"regTime"`
+	LastUpdatedTime time.Time                  `bson:"lastUpdatedTime"`
 }
 
 func (u *User) ToDomainUser() *model.User {

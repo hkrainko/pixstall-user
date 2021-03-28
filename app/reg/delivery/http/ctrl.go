@@ -4,6 +4,8 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"image"
+	_ "image/jpeg"
+	_ "image/png"
 	"mime/multipart"
 	"net/http"
 	"pixstall-user/app/reg/delivery/model/register"

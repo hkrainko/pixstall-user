@@ -36,7 +36,7 @@ func (r *rabbitmqMsgBrokerRepo) SendRegisterArtistMsg(ctx context.Context, info 
 		return err
 	}
 	err = r.ch.Publish(
-		"user",
+		"artist",
 		"artist.cmd.create",
 		false,
 		false,
@@ -57,7 +57,7 @@ func (r *rabbitmqMsgBrokerRepo) SendArtistUpdateMsg(ctx context.Context, updater
 		return err
 	}
 	err = r.ch.Publish(
-		"user",
+		"artist",
 		"artist.cmd.update",
 		false,
 		false,
