@@ -66,7 +66,7 @@ func (k kongJWTTokenRepo) GenerateAPIToken(ctx context.Context, userID string) (
 		UserID: userID,
 		StandardClaims: jwt.StandardClaims{
 			Audience:  "API",
-			ExpiresAt: time.Now().Add(10 * time.Second).Unix(),
+			ExpiresAt: time.Now().Add(30 * 24 * time.Hour).Unix(),
 			Id:        "pixstall-api-jwt",
 			IssuedAt:  time.Now().Unix(),
 			Issuer:    "pixstall-api-cred",
