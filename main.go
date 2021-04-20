@@ -99,7 +99,7 @@ func main() {
 	{
 		authIDExtractor := middleware.NewJWTPayloadsExtractor([]string{"authId"})
 		ctr := InitRegController(authGRPCConn, (*repo.FileGRPCClientConn)(fileGRPCConn), db, ch, rabbitmqConn)
-		regGroup.POST("/registration", authIDExtractor.ExtractPayloadsFromJWT, ctr.Registration)
+		regGroup.POST("", authIDExtractor.ExtractPayloadsFromJWT, ctr.Registration)
 	}
 
 	userGroup := apiGroup.Group("/users")
