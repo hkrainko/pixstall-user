@@ -3,13 +3,15 @@ package get_user
 import (
 	"net/http"
 	"pixstall-user/domain/user/model"
+	"time"
 )
 
 type SuccessResponse struct {
-	UserID      string
-	UserName    string
-	ProfilePath string
-	IsArtist    bool
+	UserID      string    `json:"userId"`
+	UserName    string    `json:"userName"`
+	ProfilePath string    `json:"profilePath"`
+	RegTime     time.Time `json:"regTime"`
+	IsArtist    bool      `json:"isArtist"`
 }
 
 func NewSuccessResponse(user *model.User) (int, interface{}) {
@@ -17,6 +19,7 @@ func NewSuccessResponse(user *model.User) (int, interface{}) {
 		UserID:      user.UserID,
 		UserName:    user.UserName,
 		ProfilePath: user.ProfilePath,
+		RegTime:     user.RegTime,
 		IsArtist:    user.IsArtist,
 	}
 }
