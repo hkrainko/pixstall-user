@@ -16,6 +16,10 @@ func NewErrorResponse(err error) (int, interface{}) {
 			return http.StatusNotFound, ErrorResponse{
 				Message: userError.Error(),
 			}
+		case model.UserErrorTerminated:
+			return http.StatusForbidden, ErrorResponse{
+				Message: userError.Error(),
+			}
 		default:
 			return http.StatusInternalServerError, ErrorResponse{
 				Message: err.Error(),
