@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	error2 "pixstall-user/domain/error"
 	"pixstall-user/domain/file"
 	"pixstall-user/domain/token"
 	"pixstall-user/domain/user"
@@ -35,13 +36,16 @@ func (u userUseCase) GetAuthUser(ctx context.Context, userID string) (*model.Aut
 	if err != nil {
 		return nil, err
 	}
+	if dUser.State == model.UserStateTerminated {
+		return nil, error2.TerminatedUserError
+	}
 	apiToken, err := u.tokenRepo.GenerateAPIToken(ctx, dUser.UserID)
 	if err != nil {
 		return nil, err
 	}
 	dUserDetails := model.AuthUser{
 		APIToken: apiToken,
-		User: *dUser,
+		User:     *dUser,
 	}
 	return &dUserDetails, nil
 }
