@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"pixstall-user/domain/file"
+	model2 "pixstall-user/domain/file/model"
 	"pixstall-user/domain/token"
 	"pixstall-user/domain/user"
 	"pixstall-user/domain/user/model"
@@ -49,14 +50,23 @@ func (u userUseCase) GetAuthUser(ctx context.Context, userID string) (*model.Aut
 	return &dUserDetails, nil
 }
 
-func (u userUseCase) UpdateUser(ctx context.Context, updater *model.UserUpdater) (*model.User, error) {
-	err := u.userRepo.UpdateUser(ctx, updater.UserID, updater)
-	if err != nil {
-		return nil, err
-	}
+func (u userUseCase) UpdateUser(ctx context.Context, updater *model.UserUpdater, profile *model2.ImageFile) (*string, error) {
 	dUser, err := u.userRepo.GetUserDetails(ctx, updater.UserID)
 	if err != nil {
 		return nil, err
 	}
-	return dUser, nil
+	if dUser.State == model.UserStateTerminated {
+		return nil, model.UserErrorTerminated
+	}
+	var profilePath *string
+	if profile != nil {
+		profilePath, _ = u.fileRepo.SaveFile(ctx, profile.File, model2.FileTypeProfile, updater.UserID, []string{"*"})
+	}
+	updater.ProfilePath = profilePath
+	err = u.userRepo.UpdateUser(ctx, updater.UserID, updater)
+	if err != nil {
+		return nil, err
+	}
+
+	return &updater.UserID, nil
 }

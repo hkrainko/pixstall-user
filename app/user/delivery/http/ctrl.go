@@ -6,6 +6,8 @@ import (
 	get_user "pixstall-user/app/user/delivery/model/get-user"
 	get_user_details "pixstall-user/app/user/delivery/model/get-user-details"
 	update_user "pixstall-user/app/user/delivery/model/update-user"
+	gin2 "pixstall-user/app/utils/gin"
+	model3 "pixstall-user/domain/file/model"
 	"pixstall-user/domain/user"
 	"pixstall-user/domain/user/model"
 )
@@ -57,30 +59,38 @@ func (u UserController) UpdateUser(c *gin.Context) {
 		c.JSON(update_user.NewErrorResponse(errors.New("userID format invalid")))
 		return
 	}
-	if tokenUserID != pathUserID {
-		c.JSON(update_user.NewErrorResponse(errors.New("userIDs not match")))
+	if pathUserID != "me" {
+		c.JSON(update_user.NewErrorResponse(errors.New("cannot update other user")))
 		return
 	}
 	updater := model.UserUpdater{
-		UserID: pathUserID,
+		UserID: tokenUserID,
 	}
 	if userName := c.PostForm("userName"); userName != "" {
 		updater.UserName = &userName
 	}
-	if email := c.PostForm("email"); email != "" {
-		updater.Email = &email
-	}
-	if birthday := c.PostForm("birthday"); birthday != "" {
-		updater.Birthday = &birthday
-	}
-	if gender := c.PostForm("gender"); gender != "" {
-		updater.Gender = &gender
+	// Not allowed to update
+	//if email := c.PostForm("email"); email != "" {
+	//	updater.Email = &email
+	//}
+	//if birthday := c.PostForm("birthday"); birthday != "" {
+	//	updater.Birthday = &birthday
+	//}
+	//if gender := c.PostForm("gender"); gender != "" {
+	//	updater.Gender = &gender
+	//}
+
+	var profileFile *model3.ImageFile
+	images, err := gin2.GetMultipartFormImages(c, "profile")
+	if err == nil {
+		imgs := *images
+		profileFile = &imgs[0]
 	}
 
-	dUser, err := u.userUseCase.UpdateUser(c, &updater)
+	userID, err := u.userUseCase.UpdateUser(c, &updater, profileFile)
 	if err != nil {
 		c.JSON(update_user.NewErrorResponse(err))
 		return
 	}
-	c.JSON(update_user.NewSuccessResponse(dUser))
+	c.JSON(update_user.NewSuccessResponse(*userID))
 }
