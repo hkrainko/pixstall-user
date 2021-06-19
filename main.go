@@ -105,7 +105,7 @@ func main() {
 	userGroup := apiGroup.Group("/users")
 	{
 		userIDExtractor := middleware.NewJWTPayloadsExtractor([]string{"userId"})
-		ctr := InitUserController(authGRPCConn, (*repo.FileGRPCClientConn)(fileGRPCConn), db)
+		ctr := InitUserController(authGRPCConn, (*repo.FileGRPCClientConn)(fileGRPCConn), db, rabbitmqConn)
 		userGroup.GET("/:id", func(c *gin.Context) {
 			if strings.HasSuffix(c.Request.RequestURI, "/me") {
 				userIDExtractor.ExtractPayloadsFromJWT(c)

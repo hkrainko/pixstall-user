@@ -2,8 +2,10 @@ package usecase
 
 import (
 	"context"
+	"fmt"
 	"pixstall-user/domain/file"
 	model2 "pixstall-user/domain/file/model"
+	msgBroker "pixstall-user/domain/msg-broker"
 	"pixstall-user/domain/token"
 	"pixstall-user/domain/user"
 	"pixstall-user/domain/user/model"
@@ -13,13 +15,15 @@ type userUseCase struct {
 	userRepo  user.Repo
 	fileRepo  file.Repo
 	tokenRepo token.Repo
+	msgBrokerRepo msgBroker.Repo
 }
 
-func NewUserUseCase(userRepo user.Repo, fileRepo file.Repo, tokenRepo token.Repo) user.UseCase {
+func NewUserUseCase(userRepo user.Repo, fileRepo file.Repo, tokenRepo token.Repo, msgBrokerRepo msgBroker.Repo) user.UseCase {
 	return &userUseCase{
 		userRepo:  userRepo,
 		fileRepo:  fileRepo,
 		tokenRepo: tokenRepo,
+		msgBrokerRepo: msgBrokerRepo,
 	}
 }
 
@@ -67,6 +71,11 @@ func (u userUseCase) UpdateUser(ctx context.Context, updater *model.UserUpdater,
 	if err != nil {
 		return nil, err
 	}
-
+	if dUser.IsArtist {
+		err = u.msgBrokerRepo.SendArtistUpdateMsg(ctx, updater)
+		if err != nil {
+			fmt.Printf("SendArtistUpdateMsg err: %s", err)
+		}
+	}
 	return &updater.UserID, nil
 }

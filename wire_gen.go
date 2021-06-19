@@ -45,11 +45,12 @@ func InitRegController(grpcConn *grpc.ClientConn, fileGRPCConn *repo.FileGRPCCli
 	return regController
 }
 
-func InitUserController(grpcConn *grpc.ClientConn, fileGRPCConn *repo.FileGRPCClientConn, db *mongo.Database) http3.UserController {
+func InitUserController(grpcConn *grpc.ClientConn, fileGRPCConn *repo.FileGRPCClientConn, db *mongo.Database, conn *amqp.Connection) http3.UserController {
 	userRepo := mongo2.NewMongoUserRepo(db)
 	fileRepo := repo.NewGRPCFileRepository(fileGRPCConn)
 	tokenRepo := kong_jwt.NewKongJWTTokenRepo()
-	useCase := usecase3.NewUserUseCase(userRepo, fileRepo, tokenRepo)
+	msg_brokerRepo := rabbitmq.NewRabbitMQMsgBrokerRepo(conn)
+	useCase := usecase3.NewUserUseCase(userRepo, fileRepo, tokenRepo, msg_brokerRepo)
 	userController := http3.NewUserController(useCase)
 	return userController
 }
