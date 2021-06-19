@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"fmt"
+	model3 "pixstall-user/domain/artist/model"
 	"pixstall-user/domain/file"
 	model2 "pixstall-user/domain/file/model"
 	msgBroker "pixstall-user/domain/msg-broker"
@@ -72,7 +73,8 @@ func (u userUseCase) UpdateUser(ctx context.Context, updater *model.UserUpdater,
 		return nil, err
 	}
 	if dUser.IsArtist {
-		err = u.msgBrokerRepo.SendArtistUpdateMsg(ctx, updater)
+		artistUpdater := model3.NewArtistUpdaterFromUserUpdater(*updater)
+		err = u.msgBrokerRepo.SendArtistUpdateMsg(ctx, &artistUpdater)
 		if err != nil {
 			fmt.Printf("SendArtistUpdateMsg err: %s", err)
 		}

@@ -6,10 +6,10 @@ import (
 	"github.com/streadway/amqp"
 	"log"
 	msg2 "pixstall-user/app/msg-broker/repo/rabbitmq/msg"
+	model3 "pixstall-user/domain/artist/model"
 	"pixstall-user/domain/commission/model"
 	msg_broker "pixstall-user/domain/msg-broker"
 	model2 "pixstall-user/domain/reg/model"
-	domainUserModel "pixstall-user/domain/user/model"
 )
 
 type rabbitmqMsgBrokerRepo struct {
@@ -51,8 +51,8 @@ func (r *rabbitmqMsgBrokerRepo) SendRegisterArtistMsg(ctx context.Context, info 
 	return nil
 }
 
-func (r *rabbitmqMsgBrokerRepo) SendArtistUpdateMsg(ctx context.Context, updater *domainUserModel.UserUpdater) error {
-	b, err := json.Marshal(msg2.NewUserUpdaterFromDomainUserUpdater(updater))
+func (r *rabbitmqMsgBrokerRepo) SendArtistUpdateMsg(ctx context.Context, updater *model3.ArtistUpdater) error {
+	b, err := json.Marshal(msg2.NewArtistUpdaterFromDomainUserUpdater(updater))
 	if err != nil {
 		return err
 	}
