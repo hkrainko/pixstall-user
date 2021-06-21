@@ -79,5 +79,9 @@ func (u userUseCase) UpdateUser(ctx context.Context, updater *model.UserUpdater,
 			fmt.Printf("SendUpdateArtistCmd err: %s", err)
 		}
 	}
+	err = u.msgBrokerRepo.SendUserUpdatedEvent(ctx, updater)
+	if err != nil {
+		fmt.Printf("SendUserUpdatedEvent err: %s", err)
+	}
 	return &updater.UserID, nil
 }
