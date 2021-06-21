@@ -10,6 +10,7 @@ import (
 	"pixstall-user/domain/commission/model"
 	msg_broker "pixstall-user/domain/msg-broker"
 	model2 "pixstall-user/domain/reg/model"
+	userModel "pixstall-user/domain/user/model"
 )
 
 type rabbitmqMsgBrokerRepo struct {
@@ -30,8 +31,8 @@ func NewRabbitMQMsgBrokerRepo(conn *amqp.Connection) msg_broker.Repo {
 	}
 }
 
-func (r *rabbitmqMsgBrokerRepo) SendRegisterArtistMsg(ctx context.Context, info *model2.RegInfo) error {
-	b, err := json.Marshal(msg2.NewRegInfoFromDomainRegInfo(info))
+func (r *rabbitmqMsgBrokerRepo) SendCreateArtistCmd(ctx context.Context, info *model2.RegInfo) error {
+	b, err := json.Marshal(msg2.NewCreateArtistCmdMsg(*info))
 	if err != nil {
 		return err
 	}
@@ -51,8 +52,8 @@ func (r *rabbitmqMsgBrokerRepo) SendRegisterArtistMsg(ctx context.Context, info 
 	return nil
 }
 
-func (r *rabbitmqMsgBrokerRepo) SendArtistUpdateMsg(ctx context.Context, updater *model3.ArtistUpdater) error {
-	b, err := json.Marshal(msg2.NewArtistUpdaterFromDomainUserUpdater(updater))
+func (r *rabbitmqMsgBrokerRepo) SendUpdateArtistCmd(ctx context.Context, updater *model3.ArtistUpdater) error {
+	b, err := json.Marshal(msg2.NewUpdateArtistCmdMsg(*updater))
 	if err != nil {
 		return err
 	}
@@ -72,8 +73,29 @@ func (r *rabbitmqMsgBrokerRepo) SendArtistUpdateMsg(ctx context.Context, updater
 	return nil
 }
 
-func (r *rabbitmqMsgBrokerRepo) SendCommissionUserValidationMsg(ctx context.Context, usersValidation model.CommissionUsersValidation) error {
-	vValidation := msg2.CommissionUsersValidation{
+func (r *rabbitmqMsgBrokerRepo) SendUserUpdatedEvent(ctx context.Context, updater *userModel.UserUpdater) error {
+	b, err := json.Marshal(msg2.NewUserUpdatedEventMsg(*updater))
+	if err != nil {
+		return err
+	}
+	err = r.ch.Publish(
+		"user",
+		"user.event.updated",
+		false,
+		false,
+		amqp.Publishing{
+			ContentType: "application/json",
+			Body:        b,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *rabbitmqMsgBrokerRepo) SendCommissionUserValidationEvent(ctx context.Context, usersValidation model.CommissionUsersValidation) error {
+	vValidation := msg2.CommissionUsersValidationEventMsg{
 		CommissionUsersValidation: usersValidation,
 	}
 	b, err := json.Marshal(vValidation)
@@ -96,8 +118,8 @@ func (r *rabbitmqMsgBrokerRepo) SendCommissionUserValidationMsg(ctx context.Cont
 	return nil
 }
 
-func (r *rabbitmqMsgBrokerRepo) SendCommissionUpdateMsg(ctx context.Context, updater model.CommissionUpdater) error {
-	vUpdater := msg2.CommissionUserUpdater{
+func (r *rabbitmqMsgBrokerRepo) SendUpdateCommissionCmd(ctx context.Context, updater model.CommissionUpdater) error {
+	vUpdater := msg2.UpdateCommissionCmdMsg{
 		CommissionUpdater: updater,
 	}
 	b, err := json.Marshal(vUpdater)

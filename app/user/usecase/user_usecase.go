@@ -74,9 +74,9 @@ func (u userUseCase) UpdateUser(ctx context.Context, updater *model.UserUpdater,
 	}
 	if dUser.IsArtist {
 		artistUpdater := model3.NewArtistUpdaterFromUserUpdater(*updater)
-		err = u.msgBrokerRepo.SendArtistUpdateMsg(ctx, &artistUpdater)
+		err = u.msgBrokerRepo.SendUpdateArtistCmd(ctx, &artistUpdater)
 		if err != nil {
-			fmt.Printf("SendArtistUpdateMsg err: %s", err)
+			fmt.Printf("SendUpdateArtistCmd err: %s", err)
 		}
 	}
 	return &updater.UserID, nil

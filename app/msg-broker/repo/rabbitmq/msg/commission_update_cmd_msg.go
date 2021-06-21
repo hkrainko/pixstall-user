@@ -2,6 +2,6 @@ package msg
 
 import "pixstall-user/domain/commission/model"
 
-type CommissionUserUpdater struct {
+type UpdateCommissionCmdMsg struct {
 	model.CommissionUpdater `json:",inline"`
 }

@@ -47,7 +47,7 @@ func (c commissionUseCase) HandleNewCreatedCommission(ctx context.Context, comm 
 		RequesterName:        &requester.UserName,
 		RequesterProfilePath: &requester.ProfilePath,
 	}
-	return c.msgBrokerRepo.SendCommissionUserValidationMsg(ctx, commUsersValidation)
+	return c.msgBrokerRepo.SendCommissionUserValidationEvent(ctx, commUsersValidation)
 }
 
 
@@ -59,5 +59,5 @@ func (c commissionUseCase) sendCommissionUserInvalidateMsg(ctx context.Context, 
 		IsValid:              false,
 		InvalidReason:        &reason,
 	}
-	return c.msgBrokerRepo.SendCommissionUserValidationMsg(ctx, commUsersValidation)
+	return c.msgBrokerRepo.SendCommissionUserValidationEvent(ctx, commUsersValidation)
 }

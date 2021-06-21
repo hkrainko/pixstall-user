@@ -2,6 +2,6 @@ package msg
 
 import "pixstall-user/domain/commission/model"
 
-type CommissionUsersValidation struct {
+type CommissionUsersValidationEventMsg struct {
 	model.CommissionUsersValidation `json:",inline"`
 }

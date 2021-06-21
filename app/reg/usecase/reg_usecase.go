@@ -78,10 +78,10 @@ func (r regUseCase) Registration(ctx context.Context, info model.RegInfo, profil
 	}
 
 	if info.RegAsArtist {
-		err := r.msgBroker.SendRegisterArtistMsg(ctx, &info)
+		err := r.msgBroker.SendCreateArtistCmd(ctx, &info)
 		//not return err
 		if err != nil {
-			log.Printf("SendRegisterArtistMsg err %v", err)
+			log.Printf("SendCreateArtistCmd err %v", err)
 		}
 	}
 
